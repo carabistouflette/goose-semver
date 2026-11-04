@@ -29,5 +29,6 @@ an exact allocator budget or recovery from Goose runtime allocation failure.
 Tests combine public behavior, independent Python integer/regex oracles,
 targeted exhaustive byte-edit neighborhoods, seeded mutations, roundtrip and
 failure-state invariants, SIMD block/tail boundary cases and GCC/Clang ASan/UBSan
-runs. These improve confidence but do not prove the absence of bugs. The pinned
+runs, the in-process/TinyCC fallback, protected-page read-only slices and
+coverage-guided fuzzing with a self-tested crash-artifact bridge. These improve confidence but do not prove the absence of bugs. The pinned
 Goose compiler and standard-library runtime are part of the trust boundary.

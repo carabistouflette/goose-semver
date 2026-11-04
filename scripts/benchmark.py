@@ -23,14 +23,16 @@ fixtures = ["parse_short", "parse_long", "requirement_short", "requirement_many"
             "requirement_long", "compare_long_equal", "match_prerelease", "compare_short_equal", "compare_short_different",
             "compare_long_late_difference", "compare_long_early_difference",
             "compare_many_identifiers", "compare_large_core", "match_many_success",
-            "match_many_early_failure", "reject_long"]
+            "match_many_early_failure", "reject_long", "parse_release", "parse_long_core",
+            "parse_numeric_prerelease", "reject_zero_core", "compare_numeric_prerelease",
+            "match_release", "compare_numeric_identifiers", "requirement_long_many"]
 samples = {name: [] for name in fixtures}
 for sample in range(8):
     result = subprocess.run([binary, str(iterations)], capture_output=True,
                             text=True, check=True, timeout=120)
     rows = [line.split("\t") for line in result.stdout.splitlines()]
     assert [row[0] for row in rows] == fixtures + ["checksum"], result.stdout
-    assert int(rows[-1][1]) == iterations * 4133, result.stdout
+    assert int(rows[-1][1]) == iterations * 12325, result.stdout
     for name, elapsed, count in rows[:-1]:
         assert int(count) == iterations and int(elapsed) >= 0
         if sample:

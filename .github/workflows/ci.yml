@@ -21,4 +21,16 @@ jobs:
       - run: make security
       - run: make sanitize SANITIZER_CC=gcc
       - run: make sanitize SANITIZER_CC=clang
+      - run: make fuzz
+      - name: Preserve fuzz failure inputs and logs
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: semver-fuzz-failure
+          if-no-files-found: ignore
+          path: |
+            .build/fuzz/artifacts/
+            .build/fuzz/run.log
+            .build/fuzz/self-test.log
+            .build/fuzz/summary.json
       - run: make bench BENCH_ITERATIONS=100

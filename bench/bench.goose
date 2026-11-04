@@ -104,5 +104,45 @@ fn main() {
         if error.kind != semver::ErrorKind.None { checksum += 1; }
     }
     print("reject_long\t", clock_ns() - start_invalid, "\t", iterations);
+    var numeric_text = str("1.2.3-");
+    for i in 4090 { numeric_text.push('9'); }
+    let numeric_a, nae = semver::parse(numeric_text);
+    numeric_text[6] = '1';
+    let numeric_b, nbe = semver::parse(numeric_text);
+    assert(nae.kind == semver::ErrorKind.None && nbe.kind == semver::ErrorKind.None);
+    for source, index in ["1.2.3", core_text, numeric_text] {
+        let start = clock_ns();
+        for i in iterations {
+            let value, error = semver::parse(source);
+            assert(error.kind == semver::ErrorKind.None);
+            checksum += value.major.len + value.prerelease.len;
+        }
+        print(if index == 0 { "parse_release" } else if index == 1 { "parse_long_core" } else { "parse_numeric_prerelease" }, "\t", clock_ns() - start, "\t", iterations);
+    }
+    core_text[0] = '0';
+    let start_zero = clock_ns();
+    for i in iterations {
+        let invalid, error = semver::parse(core_text);
+        if error.kind == semver::ErrorKind.LeadingZero { checksum += 1; }
+    }
+    print("reject_zero_core\t", clock_ns() - start_zero, "\t", iterations);
+    compare_case("compare_numeric_prerelease", numeric_a, numeric_b, iterations, 1, checksum);
+    match_case("match_release", r, release, iterations, checksum);
+    var numeric_dots = str("1.2.3-");
+    for i in 1000 { numeric_dots.append("1."); }
+    numeric_dots.push('9');
+    let numeric_dots_a, nda = semver::parse(numeric_dots);
+    numeric_dots[numeric_dots.len - 1] = '1'; numeric_dots.push('0');
+    let numeric_dots_b, ndb = semver::parse(numeric_dots);
+    assert(nda.kind == semver::ErrorKind.None && ndb.kind == semver::ErrorKind.None);
+    compare_case("compare_numeric_identifiers", numeric_dots_a, numeric_dots_b, iterations, 2, checksum);
+    let long_many = str(large, ",", large, ",", large);
+    let start_long_many = clock_ns();
+    for i in iterations {
+        let requirement, error = semver::parse_requirement(long_many);
+        assert(error.kind == semver::ErrorKind.None);
+        checksum += requirement.comparators.len;
+    }
+    print("requirement_long_many\t", clock_ns() - start_long_many, "\t", iterations);
     print("checksum\t", checksum);
 }

@@ -3,8 +3,12 @@ CC ?= gcc
 SANITIZER_CC ?= gcc
 BENCH_CC ?= gcc
 BENCH_ITERATIONS ?= 10000
+FUZZ_CC ?= clang
+FUZZ_RUNS ?= 100000
+FUZZ_SECONDS ?= 30
+FUZZ_SEED ?= 20261104
 .NOTPARALLEL:
-.PHONY: setup format check test property security sanitize bench
+.PHONY: setup format check test property security sanitize bench jit-security fuzz
 setup:
 	./scripts/setup-goose.sh
 format:
@@ -12,6 +16,7 @@ format:
 check:
 	"$(GOOSE)" format --check semver.goose tests examples bench
 	"$(GOOSE)" check tests/api.goose
+	"$(GOOSE)" check tests/fuzz.goose
 	"$(GOOSE)" check tests/oracle.goose
 	"$(GOOSE)" check examples/versions.goose
 	"$(GOOSE)" check bench/bench.goose
@@ -29,7 +34,10 @@ property:
 	python3 tests/model.py .build/oracle
 	"$(GOOSE)" build tests/oracle.goose --cc "$(CC)" --debug --no-bce -o .build/oracle-debug
 	python3 tests/model.py .build/oracle-debug
-security: property
+jit-security:
+	GOOSE="$(abspath $(GOOSE))" python3 tests/model.py scripts/jit-oracle.sh --security
+	GOOSE="$(abspath $(GOOSE))" python3 tests/exhaustive.py scripts/jit-oracle.sh
+security: property jit-security
 	python3 tests/exhaustive.py .build/oracle
 	python3 tests/exhaustive.py .build/oracle-debug
 	python3 tests/model.py .build/oracle --security
@@ -50,3 +58,6 @@ bench:
 	mkdir -p .build
 	"$(GOOSE)" build bench/bench.goose --cc "$(BENCH_CC)" -O2 -o .build/bench
 	BENCH_CC="$(BENCH_CC)" python3 scripts/benchmark.py .build/bench $(BENCH_ITERATIONS)
+
+fuzz:
+	python3 scripts/fuzz.py --goose "$(abspath $(GOOSE))" --cc "$(FUZZ_CC)" --runs $(FUZZ_RUNS) --seconds $(FUZZ_SECONDS) --seed $(FUZZ_SEED)

@@ -54,6 +54,7 @@ cd goose-semver
 make setup
 make check test
 make security
+make fuzz
 make sanitize SANITIZER_CC=gcc
 make sanitize SANITIZER_CC=clang
 make bench
@@ -66,7 +67,8 @@ Setup needs Git, CMake 3.27+, C/C++20 compilers, and Make. Tests and benchmarks
 need Python 3.11+. The pinned compiler is in `GOOSE_REVISION`; an existing matching
 compiler can be selected with `GOOSE=/absolute/path/to/goose`. Linux in-process
 execution needs libc development headers. Sanitizers require Linux GCC or Clang
-with AddressSanitizer/UndefinedBehaviorSanitizer runtimes.
+with AddressSanitizer/UndefinedBehaviorSanitizer runtimes. `make fuzz` also needs
+Clang/libFuzzer and Linux protected-page APIs; its native host is test-only.
 
 Public behavior tests run through Goose's in-process runner, optimized native
 code, and debug native code with bounds-check elimination disabled. They cover
@@ -78,8 +80,15 @@ include arbitrary bytes and oversized inputs. Targeted exhaustive neighborhoods
 exercise grammar-boundary edits and every byte around scalar/SIMD block and tail
 boundaries. Generated checks also verify exact formatting and failure-state invariants. Sanitizers instrument the generated
 program and runtime in debug and optimized builds and run public tests plus
-hostile oracle cases. These checks supplement each other; they do not prove
-exhaustive correctness.
+hostile oracle cases. The independent suites also run through the in-process/TinyCC backend, whose
+scanner fallback differs from native builds. `make fuzz` checks protected-page,
+read-only input slices and runs a coverage-guided mutation campaign; its assertion
+bridge is self-tested to retain exact failure inputs. Seeds, logs and crash
+artifacts stay under `.build/fuzz`. Run with `FUZZ_RUNS`, `FUZZ_SECONDS` and
+`FUZZ_SEED` to change the bounded campaign. It checks metamorphic invariants,
+complementing the independent oracle. A reused writable corpus changes mutation
+sequences. These checks supplement each other; they do not prove exhaustive
+correctness.
 
 [Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
 [Security](SECURITY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Apache-2.0](LICENSE)

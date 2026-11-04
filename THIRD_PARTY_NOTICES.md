@@ -1,7 +1,10 @@
 # Third-party notices
 
 The library and its original tests, examples and tooling are licensed under
-Apache-2.0; see [LICENSE](LICENSE). No third-party source is vendored here.
+Apache-2.0; see [LICENSE](LICENSE). No third-party parser or runtime source is
+vendored here. The test-only native fuzz host and driver adapt the Apache-2.0
+[goose-toml](https://github.com/carabistouflette/goose-toml) assertion-bridge pattern;
+its SPDX attribution is retained. These are test tooling, not runtime dependencies.
 
 The separately fetched [Goose compiler and standard library](https://github.com/aardappel/goose)
 use Apache-2.0 for Goose code and are pinned by `GOOSE_REVISION`. Upstream
