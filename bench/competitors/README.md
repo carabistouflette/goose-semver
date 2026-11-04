@@ -28,10 +28,16 @@ All generated source, dependency caches and binaries remain ignored under
 
 ## Comparable workloads
 
-`corpus.py` generates 18 fixtures and 3,136 rows. Most fixtures rotate 64 variants;
+`corpus.py` generates 21 fixtures and 3,328 rows. Most fixtures rotate 64 variants;
 the range-cache-miss fixture rotates 2,048 distinct constraints. Unequal
 comparisons alternate directions. Every adapter validates each row before timing
 and validates the full timed checksum afterward.
+The one-byte comparison fixture has 64 rotating rows repeating nine adjacent
+unordered numeric pairs in alternating directions, rather than 64 distinct inputs.
+
+The corpus includes explicit one-byte core comparisons and all-multi-digit core
+comparisons/equality controls to expose specialization tradeoffs. Older reports
+retain their original 18-fixture corpus and hashes.
 
 The common corpus uses ASCII full versions, at most 256 bytes (currently 208),
 and safe-integer **core and numeric prerelease** components. Requirements use

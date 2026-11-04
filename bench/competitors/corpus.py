@@ -12,6 +12,9 @@ def raw_cases():
         yield 'parse','parse_build_long',f'1.2.{i}+'+'z'*200,'',1
         yield 'parse','parse_invalid',['1.2.03','1.2.3-01','1.2.3?','1.2.3-a..b'][i%4],'',0
         yield 'compare','compare_release',f'1.2.{i}',f'1.2.{i+1}',-1
+        yield 'compare','compare_onebyte_core',f'1.2.{i%9}',f'1.2.{i%9+1}',-1
+        yield 'compare','compare_multidigit_core',f'{100+i}.{200+i}.{300+i}',f'{100+i}.{200+i}.{301+i}',-1
+        yield 'compare','compare_multidigit_equal',f'{100+i}.{200+i}.{300+i}+left',f'{100+i}.{200+i}.{300+i}+right',0
         yield 'compare','compare_pre',f'1.2.{i}-alpha.1',f'1.2.{i}-beta.1',-1
         yield 'compare','compare_equal_build',f'1.2.{i}-rc.1+left',f'1.2.{i}-rc.1+right',0
         yield 'compare','compare_long_pre_early',f'1.2.{i}-'+'a'*192,f'1.2.{i}-'+'b'*192,-1

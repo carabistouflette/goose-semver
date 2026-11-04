@@ -64,6 +64,13 @@ def cases(seed, random_cases):
         yield "C", (a, a + b"+001")
         yield "M", (b"=" + a + b"+ignored", a + b"+other")
 
+    # All one-byte decimal pairs at every core position, with equal preceding
+    # components so each comparison reaches the component under test.
+    for position, left, right in itertools.product(range(3), range(10), range(10)):
+        a, b = [b"1", b"2", b"3"], [b"1", b"2", b"3"]
+        a[position], b[position] = str(left).encode(), str(right).encode()
+        yield "C", (b".".join(a), b".".join(b))
+
     # Enumerate operator/whitespace/target boundaries; only ASCII space and tab
     # count as whitespace, and all versions must remain complete.
     operators = (b"", b"=", b">", b">=", b"<", b"<=", b"^", b"~", b"==", b"=>", b"!=")
