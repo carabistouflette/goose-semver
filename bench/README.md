@@ -1,6 +1,6 @@
 # Benchmarks
 
-[Competitive Rust/npm results](competitor-results.md) · [Reproduce the comparison](competitors/README.md)
+[Latest Rust/npm decimal audit](decimal-audit.md) · [Earlier Rust/npm results](competitor-results.md) · [Reproduce the comparison](competitors/README.md)
 
 Run `make bench BENCH_ITERATIONS=10000`. It builds with the pinned Goose compiler,
 GCC and `-O2`; override `BENCH_CC` to select another compiler. `BENCH_CPU` can

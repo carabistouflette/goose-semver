@@ -106,5 +106,5 @@ Cases stream in batches capped at 1,024 cases and 4 MiB, with reproducible hex
 diagnostics on disagreement. This target needs Rust/Cargo and may download the
 locked test dependency; it adds no library runtime dependency.
 
-[Rust/npm comparison](bench/competitor-results.md) · [Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
+[Rust/npm comparison](bench/decimal-audit.md) · [Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
 [Security](SECURITY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Apache-2.0](LICENSE)
