@@ -20,6 +20,7 @@ fn identifier_byte(c: u8) -> bool {
 let IDENTIFIER_END = identifier_end_set();
 let DOT = byte_set(".");
 let DIGIT_END = digit_end_set();
+let TOKEN_END = byte_set(", \t");
 
 fn identifier_end_set() -> ByteSet {
     var members: bool[256] = [false; 256];
@@ -239,7 +240,7 @@ fn parse_requirement(text: const u8[:]) -> Requirement, Error {
         }
         skip_space(text, at);
         let start = at;
-        while at < text.len && text[at] != ',' && !whitespace(text[at]) { at += 1; }
+        at = scan_end(text, start, TOKEN_END) { c => c == ',' || whitespace(c) };
         let version, error = parse(text[start..at]);
         if error.kind != ErrorKind.None {
             return Requirement { .. }, Error { error.kind, start + error.offset };
