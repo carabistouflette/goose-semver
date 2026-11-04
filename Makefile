@@ -7,6 +7,8 @@ FUZZ_CC ?= clang
 FUZZ_RUNS ?= 100000
 FUZZ_SECONDS ?= 30
 FUZZ_SEED ?= 20261104
+COMPARE_ITERATIONS ?= 100000
+COMPARE_ROUNDS ?= 9
 .NOTPARALLEL:
 .PHONY: setup format check test property security sanitize bench jit-security fuzz
 setup:
@@ -61,3 +63,7 @@ bench:
 
 fuzz:
 	python3 scripts/fuzz.py --goose "$(abspath $(GOOSE))" --cc "$(FUZZ_CC)" --runs $(FUZZ_RUNS) --seconds $(FUZZ_SECONDS) --seed $(FUZZ_SEED)
+
+.PHONY: bench-compare
+bench-compare:
+	python3 bench/competitors/run.py --goose "$(abspath $(GOOSE))" --cc "$(BENCH_CC)" --iterations $(COMPARE_ITERATIONS) --rounds $(COMPARE_ROUNDS) $(COMPARE_FLAGS)
