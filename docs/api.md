@@ -16,8 +16,9 @@ No whitespace, `v` prefix, omitted components, NUL or non-ASCII bytes.
 Fields are inspectable; comparison/matching/formatting require successfully
 parsed values whose fields have not been modified. Failure returns an empty,
 invalid Version; discard it. `Error { kind, offset }` is allocation-free;
-`ErrorKind.None` means success. Offsets are zero-based bytes (input-size errors
-use 0); EOF errors may use text length. Error kinds: None, TooLong, Syntax,
+`ErrorKind.None` means success. Offsets are zero-based bytes. Exceeding the enclosing parse input limit uses
+0; an oversized version target in a requirement uses the target start in the
+whole requirement. EOF errors may use text length. Error kinds: None, TooLong, Syntax,
 LeadingZero, TooManyComparators.
 
 `compare(a, b) -> i64` returns -1, 0, 1 for SemVer precedence, ignoring build

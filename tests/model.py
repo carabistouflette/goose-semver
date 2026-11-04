@@ -183,6 +183,20 @@ def cases(security):
         yield "C", (a, b)
         yield "C", (b, a)
         yield "C", (a, a)
+    # Force comparisons past the core into differing prerelease identifiers.
+    suffixes = [b"alpha", b"alpha.0", b"alpha.1", b"alpha.1.0", b"alpha.beta",
+                b"A", b"a", b"-", b"0", b"9", b"10", b"01a", b"0-",
+                b"9" * 1000, b"1" + b"0" * 1000, b"a." * 500 + b"z"]
+    same_core = [b"1.2.3"] + [b"1.2.3-" + suffix for suffix in suffixes]
+    for a in same_core:
+        for b in same_core:
+            yield "C", (a, b)
+            yield "C", (a + b"+build.001", b + b"+other")
+    for _ in range(500):
+        a = b"1.2.3-" + b".".join(rng.choices(suffixes[:13], k=rng.randrange(1, 8)))
+        b = b"1.2.3-" + b".".join(rng.choices(suffixes[:13], k=rng.randrange(1, 8)))
+        yield "C", (a, b)
+        yield "C", (b, a)
     # Each sorted triple checks actual pairwise ordering and transitive closure.
     for _ in range(120):
         triple = sorted(rng.sample(valid, 3), key=functools.cmp_to_key(
