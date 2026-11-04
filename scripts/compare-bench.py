@@ -18,7 +18,7 @@ from pathlib import Path
 
 SEED = 20261104
 PAIRS = 9
-EXPECTED_CHECKSUM = 12325
+EXPECTED_CHECKSUM = 12327
 
 
 def git(root, *args):

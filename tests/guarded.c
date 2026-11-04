@@ -16,14 +16,18 @@ _Noreturn void goose_fuzz_exit(int status) {
 }
 static size_t checks;
 static void exercise(uint8_t *body, size_t capacity, size_t length, int at_end,
-                     int build, int bad_byte) {
+                     int kind, int bad_byte) {
     assert(length <= capacity);
     uint8_t *input = at_end ? body + capacity - length : body;
     memset(input, '9', length);
     static const uint8_t pre[] = "1.2.3-";
     static const uint8_t meta[] = "1.2.3+";
-    const uint8_t *prefix = build ? meta : pre;
-    if (length >= sizeof(pre) - 1) memcpy(input, prefix, sizeof(pre) - 1);
+    const uint8_t *prefix = kind == 1 ? meta : pre;
+    if (kind == 2) {
+        if (length >= 4) memcpy(input + length - 4, ".0.0", 4);
+    } else if (kind != 3 && length >= sizeof(pre) - 1) {
+        memcpy(input, prefix, sizeof(pre) - 1);
+    }
     if (length > sizeof(pre) && bad_byte >= 0) input[length - 1] = (uint8_t)bad_byte;
     assert(mprotect(body, capacity, PROT_READ) == 0);
     (void)fuzz_check((sl_u8){input, (int64_t)length});
@@ -43,15 +47,15 @@ int main(int argc, char **argv) {
     goose_init(argc, argv);
     for (size_t length = 0; length <= 4097; length++) {
         for (int at_end = 0; at_end <= 1; at_end++) {
-            exercise(body, capacity, length, at_end, 0, -1);
-            exercise(body, capacity, length, at_end, 1, -1);
+            for (int kind = 0; kind < 4; kind++)
+                exercise(body, capacity, length, at_end, kind, -1);
         }
     }
     static const size_t lengths[] = {15, 16, 17, 31, 32, 33, 63, 64, 65, 127, 4096, 16383, 16384, 16385};
     for (size_t i = 0; i < sizeof(lengths) / sizeof(lengths[0]); i++) {
         for (int byte = 0; byte < 256; byte++) {
-            exercise(body, capacity, lengths[i], 1, 0, byte);
-            exercise(body, capacity, lengths[i], 1, 1, byte);
+            for (int kind = 0; kind < 4; kind++)
+                exercise(body, capacity, lengths[i], 1, kind, byte);
         }
     }
     goose_exit();

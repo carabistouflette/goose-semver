@@ -126,7 +126,12 @@ fn main() {
         if error.kind == semver::ErrorKind.LeadingZero { checksum += 1; }
     }
     print("reject_zero_core\t", clock_ns() - start_zero, "\t", iterations);
-    compare_case("compare_numeric_prerelease", numeric_a, numeric_b, iterations, 1, checksum);
+    compare_case("compare_numeric_prerelease_early", numeric_a, numeric_b, iterations, 1, checksum);
+    numeric_text[6] = '9';
+    numeric_text[numeric_text.len - 1] = '8';
+    let numeric_late, nle = semver::parse(numeric_text);
+    assert(nle.kind == semver::ErrorKind.None);
+    compare_case("compare_numeric_prerelease_late", numeric_a, numeric_late, iterations, 1, checksum);
     match_case("match_release", r, release, iterations, checksum);
     var numeric_dots = str("1.2.3-");
     for i in 1000 { numeric_dots.append("1."); }

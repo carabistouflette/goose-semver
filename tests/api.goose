@@ -232,7 +232,23 @@ fn failed_candidates() {
         assert(!semver::matches(any, candidate) && !semver::matches(less, candidate));
     }
 }
+fn numeric_scanners() {
+    var digits = str("0");
+    for i in 4088 { digits.push('0'); }
+    let malformed, error = semver::parse(str(digits, ".0.0"));
+    assert(error.kind == semver::ErrorKind.LeadingZero && error.offset == 0);
+    let bad_pre, pre_error = semver::parse(str("1.2.3-", digits));
+    assert(pre_error.kind == semver::ErrorKind.LeadingZero && pre_error.offset == 6);
+    digits.push('a');
+    let valid = version(str("1.2.3-", digits));
+    assert(valid.prerelease == digits);
+    let exact = requirement(str("=1.2.3-", digits));
+    assert(semver::matches(exact, valid));
+    for text in ["00.0.0", "0.00.0", "0.0.00", "00?", "0.00?", "0.0.00?"] {
+        invalid(text);
+    }
+}
 fn main() {
-    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates();
+    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates(); numeric_scanners();
     print("semver public API tests passed");
 }

@@ -108,6 +108,15 @@ def cases(seed, random_cases):
     for length in (15, 16, 17, 31, 32, 33, 63, 64, 65, 127):
         for tail in (b"", b"a", b"-", b".a", b"+001", b"?", b"\0", b"\xff"):
             yield "P", (b"1.2.3-0" + b"0" * length + tail,)
+    # Force the digit scanner through its scalar prefix, SIMD tail and first
+    # nondigit; all-byte noise at the start would usually miss these paths.
+    for length in (15, 16, 17, 31, 32, 33, 63, 64, 65, 127):
+        for at in sorted({0, length - 1, max(0, length - 16), min(16, length - 1)}):
+            for byte in range(256):
+                digits = b"9" * at + bytes([byte]) + b"9" * (length - at - 1)
+                yield "P", (digits + b".0.0",)
+                yield "P", (b"1.2.3-0" + digits,)
+                yield "C", (b"1.2.3-" + digits, b"1.2.3-" + b"9" * length)
     # Seeded multi-byte edits reach combinations beyond the exhaustive one-byte
     # neighborhoods, while retaining valid prefixes frequently.
     rng = random.Random(seed)

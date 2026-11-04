@@ -19,10 +19,16 @@ fn identifier_byte(c: u8) -> bool {
 }
 let IDENTIFIER_END = identifier_end_set();
 let DOT = byte_set(".");
+let DIGIT_END = digit_end_set();
 
 fn identifier_end_set() -> ByteSet {
     var members: bool[256] = [false; 256];
     for i in 256 { members[i] = !identifier_byte(i as! u8); }
+    byte_set(members)
+}
+fn digit_end_set() -> ByteSet {
+    var members: bool[256] = [false; 256];
+    for i in 256 { members[i] = !digit(i as! u8); }
     byte_set(members)
 }
 // Small identifiers stay inline; larger tails use the standard bounded scanner.
@@ -39,16 +45,17 @@ fn scan_end<F>(text: const u8[:], start: i64, endings: ByteSet&) -> i64 {
 }
 
 fn numeric(text: const u8[:]) -> bool {
-    for c in text { if !digit(c) { return false; } }
-    true
+    if text.len > 0 && !digit(text[0]) { return false; }
+    let end = scan_end(text, 0, DIGIT_END) { c => !digit(c) };
+    end == text.len
 }
 fn core(text: const u8[:], at: i64&) -> Error {
     let start = at;
-    var end = at;
-    while end < text.len && digit(text[end]) { end += 1; }
-    at = end;
+    if start + 1 < text.len && text[start] == '0' && digit(text[start + 1]) {
+        return Error { ErrorKind.LeadingZero, start };
+    }
+    at = scan_end(text, start, DIGIT_END) { c => !digit(c) };
     if at == start { return Error { ErrorKind.Syntax, at }; }
-    if at - start > 1 && text[start] == '0' { return Error { ErrorKind.LeadingZero, start }; }
     Error { .. }
 }
 fn identifiers(text: const u8[:], at: i64&, prerelease: bool) -> Error {
@@ -252,7 +259,7 @@ fn matches(requirement: Requirement&, version: Version&) -> bool {
     var eligible = version.prerelease.len == 0;
     for comparator in requirement.comparators {
         if !comparator_matches(comparator, version) { return false; }
-        if comparator.version.prerelease.len > 0 && same_core(comparator.version, version) { eligible = true; }
+        if !eligible && comparator.version.prerelease.len > 0 && same_core(comparator.version, version) { eligible = true; }
     }
     eligible
 }
