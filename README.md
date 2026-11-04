@@ -88,7 +88,13 @@ bridge is self-tested to retain exact failure inputs. Seeds, logs and crash
 artifacts stay under `.build/fuzz`. Run with `FUZZ_RUNS`, `FUZZ_SECONDS` and
 `FUZZ_SEED` to change the bounded campaign. It checks metamorphic invariants,
 complementing the independent oracle. A reused writable corpus changes mutation
-sequences. These checks supplement each other; they do not prove exhaustive
+sequences. The driver fingerprints project inputs and compiler executables
+before compilation and checks them again before writing a successful summary;
+it rejects results if these change during the campaign. Executable hashes identify
+the supplied tools; the requested compiler revision is not independently verified
+by this driver. Starting a campaign removes any previous success summary, so a
+failed run cannot leave stale success evidence beside fresh logs.
+These checks supplement each other; they do not prove exhaustive
 correctness.
 
 The optional `make differential` campaign also checks Goose and lockfile-pinned

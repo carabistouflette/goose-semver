@@ -14,11 +14,28 @@ import json
 import platform
 import re
 import resource
+import shutil
 import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MAX_INPUT_BYTES = 16384 + 1 + 4096
+
+
+def fingerprint(goose, cc):
+    """Identify the actual campaign inputs before building and after running."""
+    files = ['semver.goose', 'GOOSE_REVISION', 'scripts/fuzz.py',
+             'tests/fuzz.goose', 'tests/fuzz.c', 'tests/guarded.c']
+    compiler = shutil.which(cc)
+    if compiler is None:
+        raise RuntimeError('C compiler not found: ' + cc)
+    return {
+        'source_revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
+        'source_dirty': bool(subprocess.check_output(['git', 'status', '--porcelain'], cwd=ROOT, text=True).strip()),
+        'sources_sha256': {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in files},
+        'goose_executable_sha256': hashlib.sha256(Path(goose).read_bytes()).hexdigest(),
+        'cc_executable_sha256': hashlib.sha256(Path(compiler).resolve().read_bytes()).hexdigest(),
+    }
 
 
 def seeds():
@@ -88,6 +105,9 @@ def main():
         parser.error("seconds must be 1..3600, runs 1..100000000, seed 1..4294967295")
     resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     work = ROOT / ".build/fuzz"
+    summary_path = work / "summary.json"
+    # Fresh logs must never be mistaken for a previous successful campaign.
+    summary_path.unlink(missing_ok=True)
     all_seeds = sorted(set(seeds()))
     seed_manifest = hashlib.sha256("".join(hashlib.sha256(data).hexdigest() for data in all_seeds).encode()).hexdigest()
     initial = work / ("seeds-" + seed_manifest[:16])
@@ -105,6 +125,7 @@ def main():
     dictionary.write_text('\n'.join(json.dumps(value) for value in
                           ["0.0.0", "1.2.3", "alpha", "beta", "rc.1", "+001", "^", "~", ">=", "<=", ", ", "*"]) + '\n"\\x00"\n')
     goose = str(args.goose.resolve())
+    provenance = fingerprint(goose, args.cc)
     run([goose, "tests/fuzz.goose", "--standalone", "--debug", "--no-bce",
          "--header", str(work / "semver-fuzz.h"), "-o", str(work / "semver-fuzz.c")])
     instrument = ["-O1", "-g", "-fsanitize=fuzzer-no-link,address,undefined",
@@ -157,10 +178,12 @@ def main():
     if not finished or int(finished[-1][0]) < 1:
         raise RuntimeError("libFuzzer returned without a valid execution summary; inspect .build/fuzz/run.log")
     done = [line for line in log_text.splitlines() if "DONE" in line]
+    if fingerprint(goose, args.cc) != provenance:
+        raise RuntimeError('Source or compiler changed during build/fuzzing; discard this campaign evidence')
     report = {"goose_revision": (ROOT / "GOOSE_REVISION").read_text().strip(),
-              "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-              "source_dirty": bool(subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT, text=True).strip()),
-              "source_sha256": hashlib.sha256((ROOT / "semver.goose").read_bytes()).hexdigest(),
+              **provenance,
+              "source_sha256": provenance['sources_sha256']['semver.goose'],
+              "compiler_revision_verified_by_driver": False,
               "cc": args.cc,
               "cc_version": subprocess.check_output([args.cc, "--version"], text=True).splitlines()[0],
               "platform": platform.platform(), "seed": args.seed, "requested_runs": args.runs,
@@ -168,7 +191,7 @@ def main():
               "initial_seeds": seed_count, "seed_manifest_sha256": seed_manifest, "completed_runs": int(finished[-1][0]),
               "elapsed_seconds": int(finished[-1][1]), "coverage_summary": done[-1] if done else "",
               "scope": "Coverage-guided mutations and metamorphic invariants; not a complete independent semantic oracle. Reused writable corpus changes mutation sequences."}
-    (work / "summary.json").write_text(json.dumps(report, indent=2) + "\n")
+    summary_path.write_text(json.dumps(report, indent=2) + "\n")
     for line in done:
         print(line)
     print(finished[-1][0] + " runs completed; summary: .build/fuzz/summary.json")
