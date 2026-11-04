@@ -52,10 +52,11 @@ component and all components before it: ^1.2.3 <2.0.0; ^0.2.3 <0.3.0;
 ^0.0.3 <0.0.4. ^0.0.0 preserves the exact core. Tilde preserves major and minor
 and requires >= target. Implementations compare prefixes, never increment.
 
-`Requirement { comparators: Comparator[] }` with an empty comparator array means
-`*`. `Comparator { op: Op, version: Version }`. These fields are inspectable but
-must not be mutated. On error the returned requirement is empty: callers MUST
-check Error before matching; an error value is not a usable requirement.
+`Requirement { comparators: Comparator[], valid: bool = false }` tracks successful
+parsing. A valid empty comparator array means `*`. `Comparator { op: Op, version: Version }`. These fields are inspectable but
+must not be mutated. On error the returned requirement is invalid: `matches` returns false for it
+and for default-constructed requirements. Callers must still check Error to
+distinguish bad requirements from legitimate nonmatches.
 
 Parsing is O(input bytes), owned storage O(input bytes + comparator count).
 Comparison is O(bytes examined); matching O(total target bytes + comparator count
