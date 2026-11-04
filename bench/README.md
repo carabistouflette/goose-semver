@@ -24,7 +24,7 @@ and affinity. Generated builds stay ignored. There is no CI timing threshold.
 
 ## Before/after measurements
 
-[Latest numeric/security audit](numeric-audit.md) and [original snapshot](results.md) include every fixture and raw paired samples.
+[Latest requirement-token audit](token-audit.md), [numeric/security audit](numeric-audit.md) and [original snapshot](results.md) include every fixture and raw paired samples.
 These are internal before/after measurements on one machine and workload corpus.
 They do not establish cold latency, allocation counts or a universal ranking.
 
