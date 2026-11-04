@@ -40,7 +40,7 @@ fixtures and normalization policy remain owned by Honk.
 ## Release and dependency pins
 
 Use a reviewed full commit for reproducible imports, even when discovering it
-through the `v0.1.0` release. Published release tags will not be moved; corrections
+through a tagged release such as `v0.1.1`. Published release tags will not be moved; corrections
 use another version. Before 1.0 the API is experimental: breaking contract changes
 require an announced minor-version release, while patches preserve the documented
 contract. This does not promise Cargo/npm requirement compatibility.

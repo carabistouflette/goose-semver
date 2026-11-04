@@ -2,7 +2,7 @@
 
 Strict Semantic Versioning 2.0.0 parsing, ordering, and explicit version
 requirements for [Goose](https://github.com/aardappel/goose).
-Apache-2.0. Experimental v0.1.0 interface; see the [changelog](CHANGELOG.md).
+Apache-2.0. Experimental v0.1.1 interface; see the [changelog](CHANGELOG.md).
 
 Pure Goose, with no runtime dependencies beyond the standard library. Parsed
 values own their strings. Decimal text comparison handles numbers larger than
@@ -25,8 +25,8 @@ fn main() {
 Declare the package in the application's root source. The example above assumes
 a neighboring checkout. Remote dependencies can use
 `import semver from "carabistouflette/goose-semver@<full-commit>";`; replace
-`<full-commit>` with a reviewed published commit. The [v0.1.0 release](https://github.com/carabistouflette/goose-semver/releases/tag/v0.1.0)
-identifies the initial tagged snapshot; full commits are recommended for reproducibility.
+`<full-commit>` with a reviewed published commit. The [v0.1.1 release](https://github.com/carabistouflette/goose-semver/releases/tag/v0.1.1)
+fixes consumer-overload interference in v0.1.0; full commits are recommended for reproducibility.
 
 - `parse(text)` returns `(Version, Error)`; check `error.kind == ErrorKind.None`.
 - `compare(a, b)` returns -1, 0, or 1, ignoring build metadata.
@@ -107,6 +107,10 @@ on Mondays at 03:37 UTC (GitHub scheduling may be delayed), with five-minute or
 five-million-execution bounds per campaign. Manual runs can override the base
 seed and bounds (up to 600 seconds per campaign). Summaries record the actual seed/count; logs, reusable corpus and
 exact failure inputs are retained as GitHub artifacts for 14 days.
+Uploads explicitly include hidden files only within the fixed report, corpus and
+crash-input allowlist. Successful campaigns require nonempty summary, run and
+self-test reports; early setup/compiler failures without evidence skip empty
+uploads and keep their original failure in the job logs.
 
 The optional `make differential` campaign also checks Goose and lockfile-pinned
 Rust semver 1.0.28 independently against the Python model. Its default 59,176 seeded cases
