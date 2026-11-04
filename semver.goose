@@ -221,7 +221,7 @@ fn comparator_matches(comparator: Comparator&, version: Version&) -> bool {
     true
 }
 fn matches(requirement: Requirement&, version: Version&) -> bool {
-    if !requirement.valid { return false; }
+    if !requirement.valid || version.major.len == 0 { return false; }
     var eligible = version.prerelease.len == 0;
     for comparator in requirement.comparators {
         if !comparator_matches(comparator, version) { return false; }

@@ -31,7 +31,7 @@ Goose can import its repository at a full commit hash.
 - `format(version)` returns the exact accepted version spelling.
 - `parse_requirement(text)` returns `(Requirement, Error)`.
 - `matches(requirement, version)` applies all comparators; failed/default
-  requirements match nothing.
+  requirements and failed/default candidate versions match nothing.
 
 Versions require all three core components, with no `v` prefix or whitespace.
 Requirement operators are `=`, `>`, `>=`, `<`, `<=`, `^`, and `~`; a bare full

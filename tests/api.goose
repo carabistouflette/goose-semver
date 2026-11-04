@@ -221,7 +221,18 @@ fn limits() {
     let missing, ee = semver::parse("1.2.");
     assert(ee.kind == semver::ErrorKind.Syntax && ee.offset == 4);
 }
+fn failed_candidates() {
+    let any = requirement("*");
+    let less = requirement("<2.0.0");
+    let empty = semver::Version { .. };
+    assert(!semver::matches(any, empty) && !semver::matches(less, empty));
+    for text in ["", "1.2.03", "1.2.3-alpha.", "1.2.3+bad?", "1.2.3\0"] {
+        let candidate, error = semver::parse(text);
+        assert(error.kind != semver::ErrorKind.None);
+        assert(!semver::matches(any, candidate) && !semver::matches(less, candidate));
+    }
+}
 fn main() {
-    parsing(); precedence(); requirements(); ownership(); limits();
+    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates();
     print("semver public API tests passed");
 }

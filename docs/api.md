@@ -56,7 +56,8 @@ and requires >= target. Implementations compare prefixes, never increment.
 `Requirement { comparators: Comparator[], valid: bool = false }` tracks successful
 parsing. A valid empty comparator array means `*`. `Comparator { op: Op, version: Version }`. These fields are inspectable but
 must not be mutated. On error the returned requirement is invalid: `matches` returns false for it
-and for default-constructed requirements. Callers must still check Error to
+and for default-constructed requirements. Failed/default candidate versions
+(empty major) also match nothing. Callers must still check Error to
 distinguish bad requirements from legitimate nonmatches.
 
 Parsing is O(input bytes), owned storage O(input bytes + comparator count).
@@ -68,3 +69,7 @@ Sources: https://semver.org/spec/v2.0.0.html (versions and precedence);
 https://docs.rs/semver/1.0.28/semver/struct.VersionReq.html (prerelease eligibility
 convention only). This requirement grammar is deliberately smaller and differs
 from Cargo/npm; no compatibility claim is made.
+
+Only the types/constants and functions listed above are supported. Namespace-visible
+helpers (including cursor/identifier functions) are implementation details and
+assume internal invariants; do not call them directly.
