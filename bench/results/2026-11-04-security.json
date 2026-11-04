@@ -1,0 +1,39 @@
+{
+  "reviewed_commit": "e7e6282f42e3252bb088d83aefe9e01a7181357a",
+  "reviewed_core_sha256": "94ab6ceabe3349285959343aaeadcc9443d2f13a2db0f932b2607a84108a8b84",
+  "fuzz_campaign": {
+    "goose_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "source_revision": "15ab97ba445993b91cc7983325cb3f8f78ba44ae",
+    "source_dirty": true,
+    "source_sha256": "94ab6ceabe3349285959343aaeadcc9443d2f13a2db0f932b2607a84108a8b84",
+    "cc": "clang",
+    "cc_version": "clang version 23.1.4",
+    "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+    "seed": 20261104,
+    "requested_runs": 500000,
+    "max_seconds": 90,
+    "max_input_bytes": 20481,
+    "initial_seeds": 329,
+    "seed_manifest_sha256": "74ff98403e0cc38eaefc9173a784df51a57f7825dfb340d72fb7b9c7d43dced9",
+    "completed_runs": 500000,
+    "elapsed_seconds": 60,
+    "coverage_summary": "#500000\tDONE   cov: 775 ft: 3639 corp: 654/777Kb lim: 20481 exec/s: 8333 rss: 416Mb",
+    "scope": "Coverage-guided mutations and metamorphic invariants; not a complete independent semantic oracle. Reused writable corpus changes mutation sequences."
+  },
+  "protected_page_readonly_checks": 47120,
+  "targeted_cases_per_backend": 116573,
+  "backends": [
+    "TinyCC in-process",
+    "GCC optimized",
+    "GCC debug",
+    "GCC ASan/UBSan debug+optimized",
+    "Clang ASan/UBSan debug+optimized"
+  ],
+  "independent_hostile_cases": 11184,
+  "independent_property_cases": 9959,
+  "notes": [
+    "The fuzz campaign ran immediately before the commit, with source_dirty=true. Its tested source hash matches the reviewed committed core.",
+    "Coverage counters include the generated runtime and test harness and are not a source coverage percentage.",
+    "Writable corpus from prior runs was retained, so a seed alone does not reproduce the exact mutation sequence."
+  ]
+}

@@ -32,3 +32,7 @@ failure-state invariants, SIMD block/tail boundary cases and GCC/Clang ASan/UBSa
 runs, the in-process/TinyCC fallback, protected-page read-only slices and
 coverage-guided fuzzing with a self-tested crash-artifact bridge. These improve confidence but do not prove the absence of bugs. The pinned
 Goose compiler and standard-library runtime are part of the trust boundary.
+
+Public CI logs and failure artifacts may be publicly accessible. For sensitive
+reports, use private vulnerability reporting and local reproduction; do not
+submit exploit inputs through a public issue, pull request or CI run.

@@ -1,5 +1,8 @@
 # Measured results
 
+A later [numeric/security audit](numeric-audit.md) records the current 25-fixture
+comparison. This original 16-fixture snapshot retains its measured source provenance.
+
 Measured on 2026-11-04: original parser `23ed238a77e6476b3706b280d6807629ddcecfe9` against candidate
 `deb55af08689d53058ce114c2072a4393232b410` using the same expanded benchmark source.
 The candidate checkout was clean. Core implementation: `f35ef9f`.
