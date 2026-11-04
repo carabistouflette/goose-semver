@@ -145,6 +145,7 @@ fn lexical(a: const u8[:], b: const u8[:]) -> i64 {
 fn decimal(a: const u8[:], b: const u8[:]) -> i64 {
     if a.len < b.len { return -1; }
     if a.len > b.len { return 1; }
+    if a.len == 1 { return if a[0] < b[0] { -1 } else if a[0] > b[0] { 1 } else { 0 }; }
     lexical(a, b)
 }
 fn same_core(a: Version&, b: Version&) -> bool {
