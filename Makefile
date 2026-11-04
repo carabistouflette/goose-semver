@@ -18,6 +18,7 @@ format:
 check:
 	"$(GOOSE)" format --check semver.goose tests examples bench
 	"$(GOOSE)" check tests/api.goose
+	"$(GOOSE)" check tests/caller_overloads.goose
 	"$(GOOSE)" check tests/fuzz.goose
 	"$(GOOSE)" check tests/oracle.goose
 	"$(GOOSE)" check examples/versions.goose
@@ -26,10 +27,15 @@ check:
 test:
 	mkdir -p .build
 	"$(GOOSE)" run tests/api.goose
+	"$(GOOSE)" run tests/caller_overloads.goose
 	"$(GOOSE)" build tests/api.goose --cc "$(CC)" -O2 -o .build/api
 	./.build/api
 	"$(GOOSE)" build tests/api.goose --cc "$(CC)" --debug --no-bce -o .build/api-debug
 	./.build/api-debug
+	"$(GOOSE)" build tests/caller_overloads.goose --cc "$(CC)" -O2 -o .build/caller-overloads
+	./.build/caller-overloads
+	"$(GOOSE)" build tests/caller_overloads.goose --cc "$(CC)" --debug --no-bce -o .build/caller-overloads-debug
+	./.build/caller-overloads-debug
 	"$(GOOSE)" run examples/versions.goose
 	"$(GOOSE)" run examples/tag_candidates.goose
 property:
@@ -52,11 +58,15 @@ sanitize:
 	mkdir -p .build
 	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/api.goose --cc "$(abspath scripts/sanitizer-cc.sh)" --standalone --debug --no-bce -o .build/api-sanitize
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 ./.build/api-sanitize
+	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/caller_overloads.goose --cc "$(abspath scripts/sanitizer-cc.sh)" --standalone --debug --no-bce -o .build/caller-overloads-sanitize
+	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 ./.build/caller-overloads-sanitize
 	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/oracle.goose --cc "$(abspath scripts/sanitizer-cc.sh)" --standalone --debug --no-bce -o .build/oracle-sanitize
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/model.py .build/oracle-sanitize --security
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/exhaustive.py .build/oracle-sanitize
 	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/api.goose --cc "$(abspath scripts/sanitizer-cc.sh)" --standalone -O2 --no-bce -o .build/api-sanitize-optimized
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 ./.build/api-sanitize-optimized
+	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/caller_overloads.goose --cc "$(abspath scripts/sanitizer-cc.sh)" --standalone -O2 --no-bce -o .build/caller-overloads-sanitize-optimized
+	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 ./.build/caller-overloads-sanitize-optimized
 	SANITIZER_CC="$(SANITIZER_CC)" "$(GOOSE)" build tests/oracle.goose --cc "$(abspath scripts/sanitizer-cc.sh)" --standalone -O2 --no-bce -o .build/oracle-sanitize-optimized
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/model.py .build/oracle-sanitize-optimized --security
 	ASAN_OPTIONS=detect_leaks=1 UBSAN_OPTIONS=halt_on_error=1 python3 tests/exhaustive.py .build/oracle-sanitize-optimized
