@@ -17,6 +17,7 @@ import subprocess
 from pathlib import Path
 import corpus
 import capabilities
+import rust_build
 
 ROOT = Path(__file__).resolve().parents[2]
 WORK = ROOT / '.build/competitors'
@@ -49,7 +50,7 @@ def main():
     p.add_argument('--reference',help='Also build previous Goose core with the same harness')
     a=p.parse_args()
     if not 1<=a.iterations<=10000000 or not 3<=a.rounds<=51:p.error('iterations1..10000000 and rounds3..51 required')
-    files=['semver.goose','GOOSE_REVISION','bench/competitors/corpus.py','bench/competitors/capabilities.py','bench/competitors/goose.goose','bench/competitors/host.c','bench/competitors/run.py','bench/competitors/rust/Cargo.toml','bench/competitors/rust/Cargo.lock','bench/competitors/rust/src/main.rs','bench/competitors/node/package.json','bench/competitors/node/package-lock.json','bench/competitors/node/bench.cjs']
+    files=['semver.goose','GOOSE_REVISION','bench/competitors/corpus.py','bench/competitors/capabilities.py','bench/competitors/goose.goose','bench/competitors/host.c','bench/competitors/run.py','bench/competitors/rust_build.py','bench/competitors/rust/Cargo.toml','bench/competitors/rust/Cargo.lock','bench/competitors/rust/src/main.rs','bench/competitors/node/package.json','bench/competitors/node/package-lock.json','bench/competitors/node/bench.cjs']
     source_revision=git('rev-parse','HEAD');source_dirty=bool(git('status','--porcelain'))
     source_hashes={f:digest(ROOT/f) for f in files}
     reference=git('rev-parse',a.reference+'^{commit}') if a.reference else None
@@ -62,16 +63,16 @@ def main():
     if cpu not in allowed:p.error('CPU is outside allowed affinity')
     # Builds may use the normal CPU set. Timed children inherit one CPU below.
     goose=str(a.goose.resolve())
+    goose_sha256=digest(Path(goose))
     engines={'goose':[str(build_goose(goose,a.cc,ROOT/'bench/competitors/goose.goose','goose'))]}
     if a.reference:
         source=WORK/'reference-source';(source/'bench/competitors').mkdir(parents=True,exist_ok=True)
         (source/'semver.goose').write_text(git('show',reference+':semver.goose')+'\n')
         (source/'bench/competitors/goose.goose').write_bytes((ROOT/'bench/competitors/goose.goose').read_bytes())
         engines['goose_reference']=[str(build_goose(goose,a.cc,source/'bench/competitors/goose.goose','reference'))]
-    env=dict(os.environ,CARGO_TARGET_DIR=str(WORK/'rust'),RUSTFLAGS='',RUSTC_WRAPPER='',RUSTC_WORKSPACE_WRAPPER='')
-    run(['cargo','build','--locked','--release','--config','build.rustflags=[]','--config','profile.release.opt-level=3','--config','profile.release.lto="thin"','--config','profile.release.codegen-units=1','--manifest-path','bench/competitors/rust/Cargo.toml'],env=env)
+    rust_binary=rust_build.build('goose-semver-rust-comparison',WORK/'rust')
     run(['npm','ci','--prefix','bench/competitors/node','--ignore-scripts','--no-audit','--no-fund'],stdout=subprocess.DEVNULL)
-    engines['rust']=[str(WORK/'rust/release/goose-semver-rust-comparison')]
+    engines['rust']=[str(rust_binary)]
     engines['node']=['node',str(ROOT/'bench/competitors/node/bench.cjs')]
     groups={}
     for row in corpus.cases():groups.setdefault(row[1],[]).append(row)
@@ -106,7 +107,7 @@ def main():
         for label in order:row['total_ns'][label]=measure(label)
         raw.append(row);print(f'completed round {i+1}/{a.rounds}',flush=True)
     controls=run(engines['goose']+['--barriers',str(a.iterations)],capture_output=True,text=True).stdout.strip().splitlines()
-    if git('rev-parse','HEAD')!=source_revision or {f:digest(ROOT/f) for f in files}!=source_hashes:
+    if git('rev-parse','HEAD')!=source_revision or {f:digest(ROOT/f) for f in files}!=source_hashes or digest(Path(goose))!=goose_sha256:
         raise RuntimeError('Source changed during build/measurement; discard timings')
     fixtures={}
     for name in groups:
@@ -116,8 +117,10 @@ def main():
             vals[label]={'median_ns':statistics.median(samples),'min_ns':min(samples),'max_ns':max(samples),'samples_ns':samples}
         fixtures[name]=vals
     cpuinfo=Path('/proc/cpuinfo').read_text()
-    files=['semver.goose','GOOSE_REVISION','bench/competitors/corpus.py','bench/competitors/capabilities.py','bench/competitors/goose.goose','bench/competitors/host.c','bench/competitors/run.py','bench/competitors/rust/Cargo.toml','bench/competitors/rust/Cargo.lock','bench/competitors/rust/src/main.rs','bench/competitors/node/package.json','bench/competitors/node/package-lock.json','bench/competitors/node/bench.cjs']
+    # The requested pin is distinct from the executable supplied by --goose.
+    compiler_provenance={'requested_goose_revision':(ROOT/'GOOSE_REVISION').read_text().strip(),'goose_executable_sha256':goose_sha256,'revision_verified_by_driver':False}
     report={'source_revision':source_revision,'dirty':source_dirty,'reference_revision':reference,'cleared_environment_keys':cleared,'goose_barrier_control_rows':controls,'cpu':next(line.split(':',1)[1].strip() for line in cpuinfo.splitlines() if line.startswith('model name')),'affinity_cpu':cpu,'platform':platform.platform(),'iterations':a.iterations,'rounds':a.rounds,'post_measurement_assertions':'Source hashes and Git HEAD unchanged since before build','seed':20261104,'goose_revision':(ROOT/'GOOSE_REVISION').read_text().strip(),'cc':run([a.cc,'--version'],capture_output=True,text=True).stdout.splitlines()[0],'rustc':run(['rustc','-Vv'],capture_output=True,text=True).stdout.strip(),'node':run(['node','--version'],capture_output=True,text=True).stdout.strip(),'versions':{'rust_semver':'1.0.28','npm_semver':'7.8.6'},'flags':{'goose':a.cc+' -O2, separate barrier TU, no LTO','rust':'Cargo release opt3, thin LTO, codegen-units1'},'sources_sha256':source_hashes,'corpus_sha256':digest(path),'binary_sha256':{label:digest(Path(command[0])) for label,command in engines.items() if label!='node'},'compatibility_probes_not_ranked':compatibility,'node_warmup':'At least200000 operations per fixture within each measured process using the same operation-specific loop as timing, rounded to whole corpus passes','scope':'Shared strict ASCII subset, safe numeric core/prerelease values and version length<=256. Owned native results; Node immutable input retention/GC. Preparsed comparisons/matches. Default npm cache retained; warm and2048-key miss workloads. Goose opaque-call overhead included, not subtracted. No cold-start, allocation-count or universal-ranking claim.','fixtures':fixtures,'raw_rounds':raw}
+    report['compiler_provenance']=compiler_provenance
     out=WORK/'results.json';out.write_text(json.dumps(report,indent=2)+'\n')
     for name,vals in fixtures.items():print(name+' '+ ' '.join(f'{label}={v["median_ns"]:.1f}ns' for label,v in vals.items()))
     print('Raw report: .build/competitors/results.json')

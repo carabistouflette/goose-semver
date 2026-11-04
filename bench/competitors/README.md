@@ -13,9 +13,11 @@ make bench-compare COMPARE_ITERATIONS=200000 COMPARE_ROUNDS=9 \
   COMPARE_FLAGS='--cpu 1 --reference b7dc3aa'
 ```
 
-These commands assume native-host Cargo builds: leave `CARGO_BUILD_TARGET` unset
-and do not set `build.target` in inherited Cargo configuration. Cross compilation
-is outside this harness.
+The driver explicitly selects rustc's native host target and consumes Cargo's
+JSON executable artifact for the named adapter. Inherited `CARGO_BUILD_TARGET`
+or `build.target` cannot silently select a stale native binary. Cross compilation
+is outside this harness. `make differential` uses the same build helper for its
+separate Rust semantic oracle.
 
 Omit `--reference` for a three-engine run; it adds the older Goose implementation
 using the **same current harness**. Reference names are resolved to full commits.
@@ -87,7 +89,10 @@ No CPU-native tuning is requested. Compiler pipelines differ; flags/runtime
 versions and hashes identify the measured configuration.
 
 The driver clears relevant Rust/Node option overrides, explicitly sets empty
-Rust flags, and controls the release optimization profile. It snapshots source
+Rust flags, and controls the release optimization profile. It hashes the supplied
+Goose compiler executable and checks that it stays unchanged. The requested
+`GOOSE_REVISION` pin is recorded separately: the driver does not infer the compiler's
+source revision from an arbitrary `--goose` path. It snapshots source
 hashes and Git state **before** building, resolves reference commits, then aborts
 if Git HEAD or a measured source changes before completion. Reports retain the
 corpus hash, dependency/source/binary hashes, versions, affinity, every raw round,
