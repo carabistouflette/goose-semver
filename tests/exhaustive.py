@@ -97,6 +97,17 @@ def cases(seed, random_cases):
         for suffix in (b"*", b"=1.2.3", b"=1.2.3,", b"=1.2.3, =1.2.3"):
             yield "M", (b" " * (size - len(suffix)) + suffix, b"1.2.3")
 
+    # Put every byte on both sides of scalar/SIMD block and tail boundaries.
+    # Valid prefixes force the identifier scanner to reach the edited byte.
+    for length in (15, 16, 17, 31, 32, 33, 63, 64, 65, 127):
+        for at in sorted({0, length - 1, max(0, length - 16), min(16, length - 1)}):
+            for byte in range(256):
+                payload = b"a" * at + bytes([byte]) + b"a" * (length - at - 1)
+                for prefix in (b"1.2.3-", b"12.3.45+"):
+                    yield "P", (prefix + payload,)
+    for length in (15, 16, 17, 31, 32, 33, 63, 64, 65, 127):
+        for tail in (b"", b"a", b"-", b".a", b"+001", b"?", b"\0", b"\xff"):
+            yield "P", (b"1.2.3-0" + b"0" * length + tail,)
     # Seeded multi-byte edits reach combinations beyond the exhaustive one-byte
     # neighborhoods, while retaining valid prefixes frequently.
     rng = random.Random(seed)

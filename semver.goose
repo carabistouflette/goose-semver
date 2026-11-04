@@ -11,38 +11,59 @@ struct Error { kind: ErrorKind = ErrorKind.None, offset: i64 = 0 }
 struct Version { major: u8[], minor: u8[], patch: u8[], prerelease: u8[], build: u8[] }
 enum Op { Equal, Greater, GreaterEqual, Less, LessEqual, Caret, Tilde }
 struct Comparator { op: Op, version: Version }
-struct Requirement { comparators: Comparator[], valid: bool = false }
+struct Requirement { valid: bool = false, comparators: Comparator[] }
 
 fn digit(c: u8) -> bool { c >= '0' && c <= '9' }
 fn identifier_byte(c: u8) -> bool {
     digit(c) || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '-'
 }
+let IDENTIFIER_END = identifier_end_set();
+let DOT = byte_set(".");
+
+fn identifier_end_set() -> ByteSet {
+    var members: bool[256] = [false; 256];
+    for i in 256 { members[i] = !identifier_byte(i as! u8); }
+    byte_set(members)
+}
+// Small identifiers stay inline; larger tails use the standard bounded scanner.
+fn scan_end<F>(text: const u8[:], start: i64, endings: ByteSet&) -> i64 {
+    var end = start;
+    let limit = min(text.len, start + 16);
+    while end < limit {
+        if F(text[end]) { return end; }
+        end += 1;
+    }
+    if end == text.len { return end; }
+    let offset = find_any(text[end..], endings);
+    if offset < 0 { text.len } else { end + offset }
+}
+
 fn numeric(text: const u8[:]) -> bool {
     for c in text { if !digit(c) { return false; } }
     true
 }
 fn core(text: const u8[:], at: i64&) -> Error {
     let start = at;
-    while at < text.len && digit(text[at]) { at += 1; }
+    var end = at;
+    while end < text.len && digit(text[end]) { end += 1; }
+    at = end;
     if at == start { return Error { ErrorKind.Syntax, at }; }
     if at - start > 1 && text[start] == '0' { return Error { ErrorKind.LeadingZero, start }; }
     Error { .. }
 }
 fn identifiers(text: const u8[:], at: i64&, prerelease: bool) -> Error {
+    var cursor = at;
     while true {
-        let start = at;
-        var only_digits = true;
-        while at < text.len && identifier_byte(text[at]) {
-            if !digit(text[at]) { only_digits = false; }
-            at += 1;
-        }
-        if at == start { return Error { ErrorKind.Syntax, at }; }
-        if prerelease && only_digits && at - start > 1 && text[start] == '0' {
+        let start = cursor;
+        cursor = scan_end(text, start, IDENTIFIER_END) { c => !identifier_byte(c) };
+        if cursor == start { return Error { ErrorKind.Syntax, cursor }; }
+        if prerelease && cursor - start > 1 && text[start] == '0' && numeric(text[start..cursor]) {
             return Error { ErrorKind.LeadingZero, start };
         }
-        if at == text.len || text[at] != '.' { break; }
-        at += 1;
+        if cursor == text.len || text[cursor] != '.' { break; }
+        cursor += 1;
     }
+    at = cursor;
     Error { .. }
 }
 
@@ -112,13 +133,19 @@ fn same_core(a: Version&, b: Version&) -> bool {
 fn prerelease_compare(a: const u8[:], b: const u8[:]) -> i64 {
     if a.len == 0 { return if b.len == 0 { 0 } else { 1 }; }
     if b.len == 0 { return -1; }
+    if a.len >= 16 && a == b { return 0; }
     var left = 0;
     var right = 0;
     while left < a.len && right < b.len {
         var left_end = left;
         var right_end = right;
-        while left_end < a.len && a[left_end] != '.' { left_end += 1; }
-        while right_end < b.len && b[right_end] != '.' { right_end += 1; }
+        if a.len < 16 && b.len < 16 {
+            while left_end < a.len && a[left_end] != '.' { left_end += 1; }
+            while right_end < b.len && b[right_end] != '.' { right_end += 1; }
+        } else {
+            left_end = scan_end(a, left, DOT) { c => c == '.' };
+            right_end = scan_end(b, right, DOT) { c => c == '.' };
+        }
         let x = a[left..left_end];
         let y = b[right..right_end];
         // Identical identifiers need neither classification nor a second scan.
@@ -166,7 +193,7 @@ fn parse_requirement(text: const u8[:]) -> Requirement, Error {
     if at < text.len && text[at] == '*' {
         at += 1;
         skip_space(text, at);
-        if at == text.len { return Requirement { comparators: [], valid: true }, Error { .. }; }
+        if at == text.len { return Requirement { valid: true, comparators: [] }, Error { .. }; }
         return empty, Error { ErrorKind.Syntax, at };
     }
     var comparators: Comparator[>..] = [];
@@ -201,7 +228,7 @@ fn parse_requirement(text: const u8[:]) -> Requirement, Error {
         at += 1;
         skip_space(text, at);
     }
-    return Requirement { comparators: copy(comparators), valid: true }, Error { .. };
+    return Requirement { valid: true, comparators: copy(comparators) }, Error { .. };
 }
 fn comparator_matches(comparator: Comparator&, version: Version&) -> bool {
     let target .= comparator.version;

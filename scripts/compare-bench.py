@@ -63,7 +63,10 @@ def main():
     root = Path(__file__).resolve().parent.parent
     pinned_cpu = None
     if hasattr(os, "sched_getaffinity"):
-        pinned_cpu = min(os.sched_getaffinity(0))
+        allowed = os.sched_getaffinity(0)
+        pinned_cpu = int(os.environ.get("BENCH_CPU", min(allowed)))
+        if pinned_cpu not in allowed:
+            parser.error("BENCH_CPU must be an allowed CPU")
         os.sched_setaffinity(0, {pinned_cpu})
     fixtures = None
     for binary in binaries.values():
@@ -107,10 +110,12 @@ def main():
         "cc": compiler,
         "cc_version": subprocess.check_output([compiler, "--version"], text=True).splitlines()[0],
         "flags": "goose build -O2",
+        "benchmark_source_sha256": hashlib.sha256((root / "bench/bench.goose").read_bytes()).hexdigest(),
+        "candidate_core_sha256": hashlib.sha256((root / "semver.goose").read_bytes()).hexdigest(),
         "baseline_revision": args.baseline_revision,
         "candidate_revision": git(root, "rev-parse", "HEAD"),
         "candidate_dirty": bool(git(root, "status", "--porcelain")),
-        "binaries": {label: {"path": str(binary),
+        "binaries": {label: {"artifact": binary.name,
                               "sha256": hashlib.sha256(binary.read_bytes()).hexdigest()}
                      for label, binary in binaries.items()},
         "raw_pairs_total_ns": raw, "fixtures": summary,

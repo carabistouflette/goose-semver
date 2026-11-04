@@ -1,6 +1,6 @@
 # Contract
 
-Experimental pure-Goose SemVer 2.0.0 library. No I/O, native code, dependencies,
+Experimental pure-Goose SemVer 2.0.0 library. No I/O, private native code, external runtime dependencies,
 regular expressions, recursion, integer conversion, or implicit coercion.
 
 ## Versions
@@ -53,7 +53,7 @@ component and all components before it: ^1.2.3 <2.0.0; ^0.2.3 <0.3.0;
 ^0.0.3 <0.0.4. ^0.0.0 preserves the exact core. Tilde preserves major and minor
 and requires >= target. Implementations compare prefixes, never increment.
 
-`Requirement { comparators: Comparator[], valid: bool = false }` tracks successful
+`Requirement { valid: bool = false, comparators: Comparator[] }` tracks successful
 parsing. A valid empty comparator array means `*`. `Comparator { op: Op, version: Version }`. These fields are inspectable but
 must not be mutated. On error the returned requirement is invalid: `matches` returns false for it
 and for default-constructed requirements. Failed/default candidate versions

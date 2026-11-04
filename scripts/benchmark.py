@@ -14,7 +14,10 @@ if not 1 <= iterations <= 10_000_000:
     raise SystemExit("iterations must be in 1..10000000")
 cpu = None
 if hasattr(os, "sched_getaffinity"):
-    cpu = min(os.sched_getaffinity(0))
+    allowed = os.sched_getaffinity(0)
+    cpu = int(os.environ.get("BENCH_CPU", min(allowed)))
+    if cpu not in allowed:
+        raise SystemExit("BENCH_CPU must be an allowed CPU")
     os.sched_setaffinity(0, {cpu})
 fixtures = ["parse_short", "parse_long", "requirement_short", "requirement_many",
             "requirement_long", "compare_long_equal", "match_prerelease", "compare_short_equal", "compare_short_different",

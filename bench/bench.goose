@@ -58,6 +58,8 @@ fn main() {
     for i in iterations { if semver::matches(r, a) { checksum += 1; } }
     print("match_prerelease\t", clock_ns() - start_match, "\t", iterations);
     let small_a, sea = semver::parse("1.2.3-alpha.1");
+    let small_equal, seq = semver::parse("1.2.3-alpha.1");
+    assert(seq.kind == semver::ErrorKind.None);
     let small_b, seb = semver::parse("1.2.3-alpha.2");
     var late_text = str("1.2.3-");
     for i in 4078 { late_text.push('z'); }
@@ -82,7 +84,7 @@ fn main() {
     assert(le.kind == semver::ErrorKind.None && ee.kind == semver::ErrorKind.None);
     assert(da.kind == semver::ErrorKind.None && db.kind == semver::ErrorKind.None);
     assert(ca.kind == semver::ErrorKind.None && cb.kind == semver::ErrorKind.None);
-    compare_case("compare_short_equal", small_a, small_a, iterations, 1, checksum);
+    compare_case("compare_short_equal", small_a, small_equal, iterations, 1, checksum);
     compare_case("compare_short_different", small_a, small_b, iterations, 2, checksum);
     compare_case("compare_long_late_difference", a, late, iterations, 1, checksum);
     compare_case("compare_long_early_difference", a, early, iterations, 1, checksum);
