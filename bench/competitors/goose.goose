@@ -50,6 +50,7 @@ fn measure(op: const u8[:], name: const u8[:], rows: Row[:], iterations: i64) {
         let elapsed, checksum = timed(rows.len, iterations) { at =>
             let v, e = semver::parse(rows[at].left);
             escape_version(v.major, v.minor, v.patch, v.prerelease, v.build);
+            escape_bytes(bytes_of([e]));
             if e.kind == semver::ErrorKind.None { 1 } else { 0 }
         };
         report(name, rows, iterations, elapsed, checksum);
@@ -58,6 +59,7 @@ fn measure(op: const u8[:], name: const u8[:], rows: Row[:], iterations: i64) {
         let elapsed, checksum = timed(rows.len, iterations) { at =>
             let r, e = semver::parse_requirement(rows[at].left);
             escape_bytes(bytes_of(r.comparators));
+            escape_bytes(bytes_of([e]));
             if e.kind == semver::ErrorKind.None { 1 } else { 0 }
         };
         report(name, rows, iterations, elapsed, checksum);
@@ -91,9 +93,9 @@ export fn bench_controls(iterations: i64) {
     let texts = ["1", "2", "3", "4"];
     let scalar_ns, scalar_sum = timed(4, iterations) { at => opaque(1) };
     let version_ns, version_sum = timed(4, iterations) { at =>
-        let t = texts[at]; escape_version(t, t, t, t, t); 1
+        let t = texts[at]; escape_version(t, t, t, t, t); escape_bytes(bytes_of([semver::Error { .. }])); 1
     };
-    let bytes_ns, bytes_sum = timed(4, iterations) { at => escape_bytes(texts[at]); 1 };
+    let bytes_ns, bytes_sum = timed(4, iterations) { at => escape_bytes(texts[at]); escape_bytes(bytes_of([semver::Error { .. }])); 1 };
     assert(scalar_sum == iterations && version_sum == iterations && bytes_sum == iterations);
     print("scalar\t", scalar_ns, "\t", iterations, "\t", scalar_sum);
     print("version\t", version_ns, "\t", iterations, "\t", version_sum);
