@@ -1,0 +1,19 @@
+{
+  "observed_utc_date": "2026-11-04",
+  "provenance": "GitHub Git refs/tags API and git ls-remote --tags; annotated tags peeled to commits. Tests are offline snapshots, not live-ref assertions.",
+  "tags": [
+    {"repository": "npm/node-semver", "tag": "v7.8.6", "ref_object": "b37b033b585ad5e575afeccadb426ea41bc6cea4", "commit": "b37b033b585ad5e575afeccadb426ea41bc6cea4", "version": "7.8.6"},
+    {"repository": "npm/node-semver", "tag": "v7.8.5", "ref_object": "6e05b7637396ac66522cff8731f07cfe0ef49a29", "commit": "6e05b7637396ac66522cff8731f07cfe0ef49a29", "version": "7.8.5"},
+    {"repository": "npm/node-semver", "tag": "v2.0.0-beta", "ref_object": "9711d9258b9749cb2772d49f617a55a0498da999", "commit": "024e3b63d294992c4f06d48bd3ebb9a4c8c0052b", "version": "2.0.0-beta"},
+    {"repository": "dtolnay/semver", "tag": "1.0.28", "ref_object": "5368cdfc013f90a4ecb686a013374a651a846e0e", "commit": "7625c7aa3f0e8ba21e099d1765bcebcb72aa8816", "version": "1.0.28"},
+    {"repository": "dtolnay/semver", "tag": "1.0.27", "ref_object": "f04511308f2dbc266b5a51f00587720371e4e22c", "commit": "6ed8561154715b2c34df417a2052597d586f2c43", "version": "1.0.27"}
+  ],
+  "rejected_tag_candidates": ["", "v", "vv1.2.3", "V1.2.3", "v 1.2.3", "v1.2", "v01.2.3", "v1.2.3\n", "refs/tags/v1.2.3", "main", "release-1.2.3"],
+  "comparisons": [["7.8.5", "7.8.6", -1], ["1.0.27", "1.0.28", -1], ["2.0.0-beta", "2.0.0", -1], ["1.0.28+left", "1.0.28+right", 0]],
+  "requirements": [
+    ["^7.8.5", "7.8.6", true], ["^7.8.5", "8.0.0", false],
+    [">=1.0.27, <1.1.0", "1.0.28", true], ["=1.0.28", "1.0.28+build.001", true],
+    ["*", "2.0.0-beta", false], [">=2.0.0-beta, <3.0.0", "2.0.0-beta", true],
+    [">=2.0.0-beta, <3.0.0", "2.0.1-beta", false], ["~7.8.5", "7.9.0", false]
+  ]
+}

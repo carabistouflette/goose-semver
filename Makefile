@@ -21,6 +21,7 @@ check:
 	"$(GOOSE)" check tests/fuzz.goose
 	"$(GOOSE)" check tests/oracle.goose
 	"$(GOOSE)" check examples/versions.goose
+	"$(GOOSE)" check examples/tag_candidates.goose
 	"$(GOOSE)" check bench/bench.goose
 test:
 	mkdir -p .build
@@ -30,12 +31,15 @@ test:
 	"$(GOOSE)" build tests/api.goose --cc "$(CC)" --debug --no-bce -o .build/api-debug
 	./.build/api-debug
 	"$(GOOSE)" run examples/versions.goose
+	"$(GOOSE)" run examples/tag_candidates.goose
 property:
 	mkdir -p .build
 	"$(GOOSE)" build tests/oracle.goose --cc "$(CC)" -O2 -o .build/oracle
 	python3 tests/model.py .build/oracle
+	python3 tests/tag_fixtures.py .build/oracle
 	"$(GOOSE)" build tests/oracle.goose --cc "$(CC)" --debug --no-bce -o .build/oracle-debug
 	python3 tests/model.py .build/oracle-debug
+	python3 tests/tag_fixtures.py .build/oracle-debug
 jit-security:
 	GOOSE="$(abspath $(GOOSE))" python3 tests/model.py scripts/jit-oracle.sh --security
 	GOOSE="$(abspath $(GOOSE))" python3 tests/exhaustive.py scripts/jit-oracle.sh
