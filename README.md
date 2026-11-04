@@ -22,9 +22,10 @@ fn main() {
 }
 ```
 
-Declare the package in the application's root source. This checkout is a local
-standalone Git repository; no public remote has been configured. Once published,
-Goose can import its repository at a full commit hash.
+Declare the package in the application's root source. The example above assumes
+a neighboring checkout. Remote dependencies can use
+`import semver from "carabistouflette/goose-semver@<full-commit>";`; replace
+`<full-commit>` with a reviewed published commit. There is no tagged release yet.
 
 - `parse(text)` returns `(Version, Error)`; check `error.kind == ErrorKind.None`.
 - `compare(a, b)` returns -1, 0, or 1, ignoring build metadata.
@@ -48,13 +49,18 @@ requirement semantics, complexity, and exact limits.
 ## Development
 
 ```sh
+git clone https://github.com/carabistouflette/goose-semver.git
+cd goose-semver
 make setup
-make format check test
-make property security
+make check test
+make security
 make sanitize SANITIZER_CC=gcc
 make sanitize SANITIZER_CC=clang
 make bench
 ```
+
+The validated platform is Linux x86-64 with GCC and Clang. The implementation
+uses Goose and its standard library only; other platforms have not been validated.
 
 Setup needs Git, CMake 3.27+, C/C++20 compilers, and Make. Tests and benchmarks
 need Python 3.11+. The pinned compiler is in `GOOSE_REVISION`; an existing matching
@@ -68,10 +74,12 @@ strict byte grammar, precedence examples, arbitrary-magnitude integers,
 prerelease eligibility, source ownership, offsets and exact resource limits.
 The deterministic Python oracle checks generated versions, comparison,
 requirements and matches against optimized and debug builds; hostile cases
-include arbitrary bytes and oversized inputs. Sanitizers instrument the generated
+include arbitrary bytes and oversized inputs. Targeted exhaustive neighborhoods
+exercise grammar-boundary edits and every byte around scalar/SIMD block and tail
+boundaries. Generated checks also verify exact formatting and failure-state invariants. Sanitizers instrument the generated
 program and runtime in debug and optimized builds and run public tests plus
 hostile oracle cases. These checks supplement each other; they do not prove
 exhaustive correctness.
 
-[Benchmark method](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
-[Apache-2.0](LICENSE)
+[Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
+[Security](SECURITY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Apache-2.0](LICENSE)
