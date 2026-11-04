@@ -9,7 +9,8 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -22,18 +23,27 @@ jobs:
       - run: make differential
       - run: make sanitize SANITIZER_CC=gcc
       - run: make sanitize SANITIZER_CC=clang
-      - run: make fuzz
+      - id: fuzz
+        run: make fuzz
+      - name: Check fuzz evidence expectations
+        id: fuzz_evidence
+        if: always() && steps.checkout.outcome == 'success'
+        env:
+          FUZZ_OUTCOME: ${{ steps.fuzz.outcome }}
+        run: python3 scripts/fuzz_evidence.py --outcome "$FUZZ_OUTCOME"
       - name: Preserve fuzz failure inputs and logs
-        if: failure()
+        if: failure() && steps.fuzz_evidence.outputs.upload_required == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: semver-fuzz-failure
-          if-no-files-found: ignore
+          if-no-files-found: error
+          include-hidden-files: true
           path: |
             .build/fuzz/artifacts/
             .build/fuzz/run.log
             .build/fuzz/self-test.log
             .build/fuzz/summary.json
+            .build/fuzz/corpus/
       - run: make bench BENCH_ITERATIONS=100
       - name: Validate pinned competitive adapters
         run: make bench-compare COMPARE_ITERATIONS=64 COMPARE_ROUNDS=3

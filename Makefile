@@ -16,6 +16,7 @@ setup:
 format:
 	"$(GOOSE)" format semver.goose tests examples bench
 check:
+	python3 tests/fuzz_evidence.py
 	"$(GOOSE)" format --check semver.goose tests examples bench
 	"$(GOOSE)" check tests/api.goose
 	"$(GOOSE)" check tests/caller_overloads.goose

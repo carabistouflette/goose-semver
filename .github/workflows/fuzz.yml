@@ -33,7 +33,8 @@ jobs:
       FUZZ_INPUT_RUNS: ${{ inputs.runs }}
       FUZZ_CAMPAIGN: ${{ matrix.campaign }}
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
@@ -58,13 +59,21 @@ jobs:
           PY
       - run: make check property
       - run: python3 tests/exhaustive.py .build/oracle --seed "$FUZZ_SEED" --random-cases 30000
-      - run: make fuzz FUZZ_SEED="$FUZZ_SEED" FUZZ_SECONDS="$FUZZ_SECONDS" FUZZ_RUNS="$FUZZ_RUNS"
+      - id: fuzz
+        run: make fuzz FUZZ_SEED="$FUZZ_SEED" FUZZ_SECONDS="$FUZZ_SECONDS" FUZZ_RUNS="$FUZZ_RUNS"
+      - name: Check fuzz evidence expectations
+        id: fuzz_evidence
+        if: always() && steps.checkout.outcome == 'success'
+        env:
+          FUZZ_OUTCOME: ${{ steps.fuzz.outcome }}
+        run: python3 scripts/fuzz_evidence.py --outcome "$FUZZ_OUTCOME"
       - name: Retain evidence, reusable corpus and exact failure inputs
-        if: always()
+        if: always() && steps.fuzz_evidence.outputs.upload_required == 'true'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: semver-fuzz-${{ matrix.campaign }}-${{ github.run_id }}
-          if-no-files-found: ignore
+          if-no-files-found: error
+          include-hidden-files: true
           retention-days: 14
           path: |
             .build/fuzz/summary.json
