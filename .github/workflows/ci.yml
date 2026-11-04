@@ -34,3 +34,5 @@ jobs:
             .build/fuzz/self-test.log
             .build/fuzz/summary.json
       - run: make bench BENCH_ITERATIONS=100
+      - name: Validate pinned competitive adapters
+        run: make bench-compare COMPARE_ITERATIONS=64 COMPARE_ROUNDS=3

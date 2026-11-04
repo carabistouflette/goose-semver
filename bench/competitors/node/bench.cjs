@@ -12,7 +12,7 @@ const fs = require('node:fs')
 const assert = require('node:assert/strict')
 const semver = require('semver')
 
-const WARMUP_ITERATIONS = 50_000
+const WARMUP_ITERATIONS = 200_000
 const KNOWN_OPERATIONS = new Set(['parse', 'compare', 'requirement', 'match'])
 const args = process.argv.slice(2)
 if (args.length !== 2 || !/^[1-9][0-9]*$/.test(args[1])) {
@@ -92,23 +92,58 @@ function operationFor (operation) {
   }
 }
 
+// Warm and measure the exact SAME loop function. Separate per-operation loops
+// avoid charging Node a cold timed callsite or a megamorphic step dispatcher.
+function parseLoop (rows, count) {
+  let checksum = 0; let at = 0
+  for (let i = 0; i < count; i++) {
+    const value = semver.parse(rows[at].left)
+    globalThis.__gooseSemverBenchmarkSink = value
+    checksum += value === null ? 0 : 1
+    if (++at === rows.length) at = 0
+  }
+  return checksum
+}
+function requirementLoop (rows, count) {
+  let checksum = 0; let at = 0
+  for (let i = 0; i < count; i++) {
+    const value = new semver.Range(rows[at].left)
+    globalThis.__gooseSemverBenchmarkSink = value
+    checksum += value.set.length > 0 ? 1 : 0
+    if (++at === rows.length) at = 0
+  }
+  return checksum
+}
+function compareLoop (rows, count) {
+  let checksum = 0; let at = 0
+  for (let i = 0; i < count; i++) {
+    checksum += Math.sign(rows[at].a.compare(rows[at].b))
+    if (++at === rows.length) at = 0
+  }
+  return checksum
+}
+function matchLoop (rows, count) {
+  let checksum = 0; let at = 0
+  for (let i = 0; i < count; i++) {
+    checksum += rows[at].range.test(rows[at].version) ? 1 : 0
+    if (++at === rows.length) at = 0
+  }
+  return checksum
+}
+const loops = { parse: parseLoop, requirement: requirementLoop, compare: compareLoop, match: matchLoop }
+
 for (const [name, fixture] of fixtures) {
   const { operation, rows } = fixture
   const step = operationFor(operation)
   for (const row of rows) {
     assert.equal(step(row), row.expected, `semantic disagreement in ${name}`)
   }
-  let warmChecksum = 0
+  const loop = loops[operation]
   const warmupIterations = Math.ceil(WARMUP_ITERATIONS / rows.length) * rows.length
-  for (let i = 0; i < warmupIterations; i++) {
-    warmChecksum += step(rows[i % rows.length])
-  }
+  const warmChecksum = loop(rows, warmupIterations)
   assert(Number.isSafeInteger(warmChecksum))
-  let checksum = 0
   const start = process.hrtime.bigint()
-  for (let i = 0; i < iterations; i++) {
-    checksum += step(rows[i % rows.length])
-  }
+  const checksum = loop(rows, iterations)
   const elapsed = process.hrtime.bigint() - start
   const cycleExpected = rows.reduce((sum, row) => sum + row.expected, 0)
   let expected = Math.floor(iterations / rows.length) * cycleExpected

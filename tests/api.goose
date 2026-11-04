@@ -157,6 +157,13 @@ fn scoped_requirement() -> semver::Requirement {
     value
 }
 fn ownership() {
+    var short_source = str("1.22.3-alpha+build");
+    let short, short_error = semver::parse(short_source);
+    assert(short_error.kind == semver::ErrorKind.None);
+    short_source.clear(); short_source.append("overwritten one-byte and mixed core storage");
+    assert(short.major == "1" && short.minor == "22" && short.patch == "3");
+    assert(semver::format(short) == "1.22.3-alpha+build");
+
     let scoped_v = scoped_version();
     let scoped_r = scoped_requirement();
     assert(semver::format(scoped_v) == "12.34.56-alpha.7+build.8");
@@ -248,7 +255,21 @@ fn numeric_scanners() {
         invalid(text);
     }
 }
+fn comparison_fast_paths() {
+    ordered("1.2.3-1a", "1.2.3-a", -1);
+    ordered("1.2.3-9", "1.2.3--", -1);
+    ordered("1.2.3-a", "1.2.3--", 1);
+    ordered("1.2.3-A", "1.2.3-a", -1);
+    for count in [31, 32, 33, 47, 48, 49, 255, 256] {
+        var left = str("1.2.3-");
+        for i in count { left.push('a'); }
+        let right = str(left, "a");
+        ordered(left, right, -1);
+        left[left.len - 1] = 'b';
+        ordered(left, right, 1);
+    }
+}
 fn main() {
-    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates(); numeric_scanners();
+    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates(); numeric_scanners(); comparison_fast_paths();
     print("semver public API tests passed");
 }

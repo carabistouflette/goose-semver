@@ -23,3 +23,8 @@ There is no Cargo/npm compatibility claim.
 GitHub Actions references are pinned by commit in `.github/workflows/ci.yml`;
 they run in CI and are not runtime dependencies or vendored source. Optional
 sanitizer tooling and system C/C++ compilers retain their respective licenses.
+
+Optional competitive benchmark adapters fetch Rust `semver` 1.0.28
+(Apache-2.0 OR MIT) and npm `semver` 7.8.6 (ISC) through checked-in lockfiles.
+Their source caches and binaries are ignored, not vendored or required by the
+library. Preserve their upstream licenses if distributing benchmark dependencies.

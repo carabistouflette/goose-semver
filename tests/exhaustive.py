@@ -117,6 +117,15 @@ def cases(seed, random_cases):
                 yield "P", (digits + b".0.0",)
                 yield "P", (b"1.2.3-0" + digits,)
                 yield "C", (b"1.2.3-" + digits, b"1.2.3-" + b"9" * length)
+    # Every valid nonnumeric first byte, including case and hyphen, exercises
+    # the first-byte ordering proof. Digits remain on the general classifier.
+    letters = b"-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+    for a in letters:
+        for b in letters:
+            left = b"1.2.3-" + bytes([a]) + b".1"
+            right = b"1.2.3-" + bytes([b]) + b".2"
+            yield "C", (left, right)
+            yield "C", (right, left)
     # Seeded multi-byte edits reach combinations beyond the exhaustive one-byte
     # neighborhoods, while retaining valid prefixes frequently.
     rng = random.Random(seed)

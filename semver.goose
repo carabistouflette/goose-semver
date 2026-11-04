@@ -49,7 +49,7 @@ fn numeric(text: const u8[:]) -> bool {
     let end = scan_end(text, 0, DIGIT_END) { c => !digit(c) };
     end == text.len
 }
-fn core(text: const u8[:], at: i64&) -> Error {
+inline fn core(text: const u8[:], at: i64&) -> Error {
     let start = at;
     if start + 1 < text.len && text[start] == '0' && digit(text[start + 1]) {
         return Error { ErrorKind.LeadingZero, start };
@@ -74,25 +74,31 @@ fn identifiers(text: const u8[:], at: i64&, prerelease: bool) -> Error {
     Error { .. }
 }
 
+// Preserve owned decimal text while avoiding a dynamic memcpy for the common
+// one-byte core component. Longer components keep the same bounded copy path.
+inline fn own_core(text: const u8[:]) -> u8[] {
+    if text.len == 1 { return [text[0]]; }
+    str(text)
+}
+
 // Validate before copying. Returned fields own their bytes, including suffixes.
-fn parse(text: const u8[:]) -> Version, Error {
-    let empty = Version { .. };
-    if text.len > MAX_VERSION_BYTES { return empty, Error { ErrorKind.TooLong, 0 }; }
+inline fn parse(text: const u8[:]) -> Version, Error {
+    if text.len > MAX_VERSION_BYTES { return Version { .. }, Error { ErrorKind.TooLong, 0 }; }
     var at = 0;
     let major_error = core(text, at);
-    if major_error.kind != ErrorKind.None { return empty, major_error; }
+    if major_error.kind != ErrorKind.None { return Version { .. }, major_error; }
     let major_end = at;
-    if at == text.len || text[at] != '.' { return empty, Error { ErrorKind.Syntax, at }; }
+    if at == text.len || text[at] != '.' { return Version { .. }, Error { ErrorKind.Syntax, at }; }
     at += 1;
     let minor_start = at;
     let minor_error = core(text, at);
-    if minor_error.kind != ErrorKind.None { return empty, minor_error; }
+    if minor_error.kind != ErrorKind.None { return Version { .. }, minor_error; }
     let minor_end = at;
-    if at == text.len || text[at] != '.' { return empty, Error { ErrorKind.Syntax, at }; }
+    if at == text.len || text[at] != '.' { return Version { .. }, Error { ErrorKind.Syntax, at }; }
     at += 1;
     let patch_start = at;
     let patch_error = core(text, at);
-    if patch_error.kind != ErrorKind.None { return empty, patch_error; }
+    if patch_error.kind != ErrorKind.None { return Version { .. }, patch_error; }
     let patch_end = at;
     var pre_start = at;
     var pre_end = at;
@@ -100,7 +106,7 @@ fn parse(text: const u8[:]) -> Version, Error {
         at += 1;
         pre_start = at;
         let error = identifiers(text, at, true);
-        if error.kind != ErrorKind.None { return empty, error; }
+        if error.kind != ErrorKind.None { return Version { .. }, error; }
         pre_end = at;
     }
     var build_start = at;
@@ -108,20 +114,26 @@ fn parse(text: const u8[:]) -> Version, Error {
         at += 1;
         build_start = at;
         let error = identifiers(text, at, false);
-        if error.kind != ErrorKind.None { return empty, error; }
+        if error.kind != ErrorKind.None { return Version { .. }, error; }
     }
     else { build_start = text.len; }
-    if at != text.len { return empty, Error { ErrorKind.Syntax, at }; }
+    if at != text.len { return Version { .. }, Error { ErrorKind.Syntax, at }; }
     return Version {
-        str(text[..major_end]), str(text[minor_start..minor_end]),
-        str(text[patch_start..patch_end]), str(text[pre_start..pre_end]),
+        own_core(text[..major_end]), own_core(text[minor_start..minor_end]),
+        own_core(text[patch_start..patch_end]), str(text[pre_start..pre_end]),
         str(text[build_start..]),
     }, Error { .. };
 }
 
 fn lexical(a: const u8[:], b: const u8[:]) -> i64 {
     let count = if a.len < b.len { a.len } else { b.len };
-    for i in count {
+    var start = 0;
+    // Constant-size equality uses the standard bounded word comparison. Skip
+    // equal blocks, then locate the first differing byte in scalar order.
+    if count >= 32 {
+        while start + 16 <= count && a[start..start + 16] == b[start..start + 16] { start += 16; }
+    }
+    for i in start..count {
         if a[i] < b[i] { return -1; }
         if a[i] > b[i] { return 1; }
     }
@@ -140,7 +152,12 @@ fn same_core(a: Version&, b: Version&) -> bool {
 fn prerelease_compare(a: const u8[:], b: const u8[:]) -> i64 {
     if a.len == 0 { return if b.len == 0 { 0 } else { 1 }; }
     if b.len == 0 { return -1; }
-    if a.len >= 16 && a == b { return 0; }
+    // A non-digit first byte proves this identifier is nonnumeric. If both
+    // first bytes differ and are nonnumeric, ASCII order decides immediately.
+    if a[0] != b[0] && !digit(a[0]) && !digit(b[0]) {
+        return if a[0] < b[0] { -1 } else { 1 };
+    }
+    if a == b { return 0; }
     var left = 0;
     var right = 0;
     while left < a.len && right < b.len {
@@ -193,19 +210,18 @@ fn skip_space(text: const u8[:], at: i64&) {
     while at < text.len && whitespace(text[at]) { at += 1; }
 }
 fn parse_requirement(text: const u8[:]) -> Requirement, Error {
-    let empty = Requirement { .. };
-    if text.len > MAX_REQUIREMENT_BYTES { return empty, Error { ErrorKind.TooLong, 0 }; }
+    if text.len > MAX_REQUIREMENT_BYTES { return Requirement { .. }, Error { ErrorKind.TooLong, 0 }; }
     var at = 0;
     skip_space(text, at);
     if at < text.len && text[at] == '*' {
         at += 1;
         skip_space(text, at);
         if at == text.len { return Requirement { valid: true, comparators: [] }, Error { .. }; }
-        return empty, Error { ErrorKind.Syntax, at };
+        return Requirement { .. }, Error { ErrorKind.Syntax, at };
     }
     var comparators: Comparator[>..] = [];
     while true {
-        if comparators.len == MAX_COMPARATORS { return empty, Error { ErrorKind.TooManyComparators, at }; }
+        if comparators.len == MAX_COMPARATORS { return Requirement { .. }, Error { ErrorKind.TooManyComparators, at }; }
         var op = Op.Equal;
         if at < text.len {
             let c = text[at];
@@ -226,12 +242,12 @@ fn parse_requirement(text: const u8[:]) -> Requirement, Error {
         while at < text.len && text[at] != ',' && !whitespace(text[at]) { at += 1; }
         let version, error = parse(text[start..at]);
         if error.kind != ErrorKind.None {
-            return empty, Error { error.kind, start + error.offset };
+            return Requirement { .. }, Error { error.kind, start + error.offset };
         }
         comparators.push(Comparator { op, copy(version) });
         skip_space(text, at);
         if at == text.len { break; }
-        if text[at] != ',' { return empty, Error { ErrorKind.Syntax, at }; }
+        if text[at] != ',' { return Requirement { .. }, Error { ErrorKind.Syntax, at }; }
         at += 1;
         skip_space(text, at);
     }
