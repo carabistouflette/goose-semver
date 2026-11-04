@@ -90,5 +90,5 @@ complementing the independent oracle. A reused writable corpus changes mutation
 sequences. These checks supplement each other; they do not prove exhaustive
 correctness.
 
-[Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
+[Rust/npm comparison](bench/competitor-results.md) · [Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
 [Security](SECURITY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Apache-2.0](LICENSE)

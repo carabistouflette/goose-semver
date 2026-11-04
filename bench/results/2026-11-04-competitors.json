@@ -1,0 +1,2085 @@
+{
+  "source_revision": "efcfc45197a47b52357531550141e34489aa186d",
+  "dirty": false,
+  "reference_revision": "b7dc3aaee7395483e5f56757f3886551634df27d",
+  "cleared_environment_keys": [],
+  "goose_barrier_control_rows": [
+    "scalar\t359304\t200000\t200000",
+    "version\t3700915\t200000\t200000",
+    "requirement\t3121642\t200000\t200000"
+  ],
+  "cpu": "Intel(R) Core(TM) Ultra 7 258V",
+  "affinity_cpu": 1,
+  "platform": "Linux-7.2.11-arch1-1-x86_64-with-glibc2.44",
+  "iterations": 200000,
+  "rounds": 9,
+  "post_measurement_assertions": "Source hashes and Git HEAD unchanged since before build",
+  "seed": 20261104,
+  "goose_revision": "eadca409f68210893f366e60d0c2f0dc29a339be",
+  "cc": "gcc (GCC) 16.2.1 20260810",
+  "rustc": "rustc 1.101.0-nightly (822182db4 2026-10-13)\nbinary: rustc\ncommit-hash: 822182db4c4a1827256881d8c7aa685f0bcf2b11\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.101.0-nightly\nLLVM version: 23.1.3",
+  "node": "v26.13.0",
+  "versions": {
+    "rust_semver": "1.0.28",
+    "npm_semver": "7.8.6"
+  },
+  "flags": {
+    "goose": "gcc -O2, separate barrier TU, no LTO",
+    "rust": "Cargo release opt3, thin LTO, codegen-units1"
+  },
+  "sources_sha256": {
+    "semver.goose": "e6b391ff7b393da4002103e59395af3dcc4597ce3b7aec25ce190faf914009b1",
+    "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+    "bench/competitors/corpus.py": "c2ac5554a724aeff935aa8455885f65dfe6081f1194818b1a3ef31a3f9e7e73a",
+    "bench/competitors/capabilities.py": "55290ec2efdc4d6bba6c3dbfb5bf11f41180f28214309a56f73797450b98a80b",
+    "bench/competitors/goose.goose": "cd978223e636f1689ce59d5c37eced4d9bd79fa88202d5c4886cb32222742f06",
+    "bench/competitors/host.c": "9d164ad60c95574dd221a14a9c751da135d4af00df5b5749e01a542c16165091",
+    "bench/competitors/run.py": "062bb39649757da39e37ad1a1499926d81ee00411aa55046ce3315ed5ba4b53e",
+    "bench/competitors/rust/Cargo.toml": "a227a1f6962399cfe03a4b5addaf3b992d14ab8a5b61076013cc1b8e4357c49c",
+    "bench/competitors/rust/Cargo.lock": "69c56192b9e72cf88886a41987ba32bdcbeeec4f38a06e583dcb2cf1237ca653",
+    "bench/competitors/rust/src/main.rs": "158703b2370ecf0749c244ac8b10abc73fe1c63917a20c1fc56f50ab4f415366",
+    "bench/competitors/node/package.json": "e3fe99ebe72f8f31da4c01a2c86a6227f3b3b89e639e43a5f7bc6b66e548c8bd",
+    "bench/competitors/node/package-lock.json": "dbf8c08d0958cb84b6ab0faeba0a5c46bfda0209fc2facbae4822f2473313896",
+    "bench/competitors/node/bench.cjs": "6d9aa87c6f261db3302807914f5e450ea6e5300500f16bfa1a4126603fbeb9cf"
+  },
+  "corpus_sha256": "3b8993b4350f0edddac842ac8869e2debd5d759189d3ab9d977df976033f03cf",
+  "binary_sha256": {
+    "goose": "94eddf3d8d467a7fa4f98bf61ed0aac9a509e232e15b3525404cf02a855b233d",
+    "goose_reference": "a8348b87f525923790ccfb3be83548e5d9075a40982536e067ec3f03f141b458",
+    "rust": "606119a421fb78c57e2652e76c3548ce58045083a5daf79753b11f835bfe4bc0"
+  },
+  "compatibility_probes_not_ranked": {
+    "goose": {
+      "v_prefix": 0,
+      "surrounding_space": 0,
+      "large_numeric_prerelease": -1,
+      "beyond_u64_core": 1,
+      "version_257_bytes": 1
+    },
+    "goose_reference": {
+      "v_prefix": 0,
+      "surrounding_space": 0,
+      "large_numeric_prerelease": -1,
+      "beyond_u64_core": 1,
+      "version_257_bytes": 1
+    },
+    "rust": {
+      "v_prefix": 0,
+      "surrounding_space": 0,
+      "large_numeric_prerelease": -1,
+      "beyond_u64_core": 0,
+      "version_257_bytes": 1
+    },
+    "node": {
+      "v_prefix": 1,
+      "surrounding_space": 1,
+      "large_numeric_prerelease": 0,
+      "beyond_u64_core": 0,
+      "version_257_bytes": 0
+    }
+  },
+  "node_warmup": "At least200000 operations per fixture within each measured process using the same operation-specific loop as timing, rounded to whole corpus passes",
+  "scope": "Shared strict ASCII subset, safe numeric core/prerelease values and version length<=256. Owned native results; Node immutable input retention/GC. Preparsed comparisons/matches. Default npm cache retained; warm and2048-key miss workloads. Goose opaque-call overhead included, not subtracted. No cold-start, allocation-count or universal-ranking claim.",
+  "fixtures": {
+    "parse_release": {
+      "goose": {
+        "median_ns": 33.58316,
+        "min_ns": 33.072045,
+        "max_ns": 35.72337,
+        "samples_ns": [
+          35.62441,
+          33.87879,
+          33.58316,
+          33.41912,
+          33.072045,
+          33.517425,
+          33.47235,
+          34.70611,
+          35.72337
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 84.06953,
+        "min_ns": 75.84662,
+        "max_ns": 100.625665,
+        "samples_ns": [
+          84.06953,
+          83.120055,
+          88.277695,
+          75.84662,
+          81.150075,
+          100.625665,
+          76.32131,
+          98.30207,
+          97.402775
+        ]
+      },
+      "rust": {
+        "median_ns": 26.06793,
+        "min_ns": 24.89231,
+        "max_ns": 31.412785,
+        "samples_ns": [
+          24.906725,
+          26.06793,
+          31.412785,
+          27.085855,
+          24.89231,
+          25.57741,
+          28.192705,
+          26.47215,
+          25.50921
+        ]
+      },
+      "node": {
+        "median_ns": 258.01072,
+        "min_ns": 252.729445,
+        "max_ns": 289.12793,
+        "samples_ns": [
+          255.964415,
+          258.01072,
+          289.12793,
+          265.723825,
+          255.093765,
+          270.78374,
+          257.75878,
+          252.729445,
+          265.608725
+        ]
+      }
+    },
+    "parse_pre_short": {
+      "goose": {
+        "median_ns": 52.593925,
+        "min_ns": 49.17941,
+        "max_ns": 55.60391,
+        "samples_ns": [
+          52.593925,
+          52.79597,
+          53.07471,
+          50.135715,
+          49.17941,
+          49.616675,
+          54.42335,
+          51.83256,
+          55.60391
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 96.634385,
+        "min_ns": 89.28276,
+        "max_ns": 115.409605,
+        "samples_ns": [
+          96.42145,
+          94.367515,
+          96.634385,
+          89.28276,
+          93.66078,
+          115.409605,
+          96.730835,
+          113.264215,
+          112.95766
+        ]
+      },
+      "rust": {
+        "median_ns": 71.56194,
+        "min_ns": 67.426675,
+        "max_ns": 79.09693,
+        "samples_ns": [
+          68.33281,
+          69.29231,
+          79.09693,
+          71.56194,
+          69.7104,
+          67.426675,
+          74.295595,
+          72.25955,
+          72.08178
+        ]
+      },
+      "node": {
+        "median_ns": 983.687005,
+        "min_ns": 949.71463,
+        "max_ns": 1028.42722,
+        "samples_ns": [
+          983.687005,
+          978.04513,
+          1016.046185,
+          961.51001,
+          949.71463,
+          1028.42722,
+          970.7762,
+          1008.41358,
+          1008.538645
+        ]
+      }
+    },
+    "parse_pre_long": {
+      "goose": {
+        "median_ns": 94.506305,
+        "min_ns": 89.4765,
+        "max_ns": 103.4732,
+        "samples_ns": [
+          97.85975,
+          93.81383,
+          94.506305,
+          91.312345,
+          89.64963,
+          89.4765,
+          96.42977,
+          103.4732,
+          99.260985
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 139.96121,
+        "min_ns": 134.529685,
+        "max_ns": 144.832725,
+        "samples_ns": [
+          137.462365,
+          136.244365,
+          143.153205,
+          134.529685,
+          144.832725,
+          142.74364,
+          136.82201,
+          140.35657,
+          139.96121
+        ]
+      },
+      "rust": {
+        "median_ns": 347.581445,
+        "min_ns": 327.23996,
+        "max_ns": 354.693845,
+        "samples_ns": [
+          352.027685,
+          327.23996,
+          349.320585,
+          338.383015,
+          338.66702,
+          331.8276,
+          354.693845,
+          348.57193,
+          347.581445
+        ]
+      },
+      "node": {
+        "median_ns": 1725.456175,
+        "min_ns": 1649.33862,
+        "max_ns": 1891.71894,
+        "samples_ns": [
+          1724.84417,
+          1718.45604,
+          1725.456175,
+          1756.38486,
+          1723.871145,
+          1806.76284,
+          1649.33862,
+          1891.71894,
+          1739.08576
+        ]
+      }
+    },
+    "parse_build_long": {
+      "goose": {
+        "median_ns": 75.299145,
+        "min_ns": 71.956025,
+        "max_ns": 81.95851,
+        "samples_ns": [
+          75.762205,
+          72.67054,
+          81.95851,
+          73.53106,
+          74.285705,
+          71.956025,
+          75.299145,
+          77.39642,
+          76.09363
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 118.98977,
+        "min_ns": 113.94869,
+        "max_ns": 140.14365,
+        "samples_ns": [
+          115.17768,
+          118.98977,
+          113.94869,
+          115.52236,
+          118.803825,
+          134.28422,
+          120.33614,
+          124.23388,
+          140.14365
+        ]
+      },
+      "rust": {
+        "median_ns": 465.960345,
+        "min_ns": 454.42884,
+        "max_ns": 481.8707,
+        "samples_ns": [
+          479.323175,
+          457.700175,
+          471.696245,
+          454.42884,
+          465.960345,
+          473.67934,
+          481.8707,
+          459.7949,
+          463.732035
+        ]
+      },
+      "node": {
+        "median_ns": 1029.76744,
+        "min_ns": 971.560485,
+        "max_ns": 1079.56201,
+        "samples_ns": [
+          1023.46347,
+          1013.24437,
+          1038.69881,
+          1029.76744,
+          1021.78596,
+          1079.56201,
+          971.560485,
+          1030.563685,
+          1047.11463
+        ]
+      }
+    },
+    "parse_invalid": {
+      "goose": {
+        "median_ns": 27.17065,
+        "min_ns": 25.676075,
+        "max_ns": 30.02396,
+        "samples_ns": [
+          27.17065,
+          26.923875,
+          27.587105,
+          30.02396,
+          26.449155,
+          25.850035,
+          25.676075,
+          28.523285,
+          28.624645
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 44.12022,
+        "min_ns": 41.02462,
+        "max_ns": 67.6399,
+        "samples_ns": [
+          43.59364,
+          44.01596,
+          44.12022,
+          41.02462,
+          43.156495,
+          66.92669,
+          44.397765,
+          60.75629,
+          67.6399
+        ]
+      },
+      "rust": {
+        "median_ns": 29.36148,
+        "min_ns": 27.55538,
+        "max_ns": 31.84618,
+        "samples_ns": [
+          27.55538,
+          28.48238,
+          30.07742,
+          29.34413,
+          28.928025,
+          31.84618,
+          29.778275,
+          29.36148,
+          30.84005
+        ]
+      },
+      "node": {
+        "median_ns": 6336.583455,
+        "min_ns": 5948.082315,
+        "max_ns": 7034.03579,
+        "samples_ns": [
+          6495.37108,
+          6336.583455,
+          6110.004925,
+          6630.93769,
+          6081.894605,
+          7034.03579,
+          5948.082315,
+          6579.171735,
+          6106.25875
+        ]
+      }
+    },
+    "compare_release": {
+      "goose": {
+        "median_ns": 12.086055,
+        "min_ns": 11.615565,
+        "max_ns": 13.943055,
+        "samples_ns": [
+          13.943055,
+          11.869165,
+          11.949315,
+          12.604195,
+          11.656445,
+          11.615565,
+          12.086055,
+          13.29525,
+          12.245305
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 12.38702,
+        "min_ns": 11.21452,
+        "max_ns": 13.231865,
+        "samples_ns": [
+          11.62346,
+          12.401355,
+          12.40931,
+          11.21452,
+          12.264725,
+          12.38702,
+          11.291055,
+          13.231865,
+          13.12736
+        ]
+      },
+      "rust": {
+        "median_ns": 5.179595,
+        "min_ns": 4.72599,
+        "max_ns": 5.9025,
+        "samples_ns": [
+          4.89132,
+          4.72599,
+          5.9025,
+          4.77152,
+          5.34675,
+          5.331,
+          5.011775,
+          5.253575,
+          5.179595
+        ]
+      },
+      "node": {
+        "median_ns": 19.26868,
+        "min_ns": 18.48301,
+        "max_ns": 46.275035,
+        "samples_ns": [
+          19.26868,
+          19.489285,
+          18.492835,
+          46.275035,
+          18.48301,
+          24.721475,
+          18.842755,
+          19.884085,
+          18.941245
+        ]
+      }
+    },
+    "compare_pre": {
+      "goose": {
+        "median_ns": 13.3035,
+        "min_ns": 12.40236,
+        "max_ns": 13.379155,
+        "samples_ns": [
+          13.379155,
+          12.52963,
+          12.694485,
+          13.3035,
+          12.40236,
+          12.54485,
+          13.35356,
+          13.3314,
+          13.337485
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 30.196965,
+        "min_ns": 28.49549,
+        "max_ns": 34.246505,
+        "samples_ns": [
+          29.529105,
+          30.694305,
+          28.49549,
+          28.60715,
+          30.72618,
+          30.196965,
+          32.219405,
+          34.246505,
+          28.958615
+        ]
+      },
+      "rust": {
+        "median_ns": 27.39966,
+        "min_ns": 26.246735,
+        "max_ns": 30.935275,
+        "samples_ns": [
+          28.436195,
+          26.246735,
+          30.935275,
+          26.58735,
+          27.39966,
+          26.97864,
+          28.406115,
+          29.12539,
+          26.808255
+        ]
+      },
+      "node": {
+        "median_ns": 61.347125,
+        "min_ns": 60.859855,
+        "max_ns": 70.16215,
+        "samples_ns": [
+          61.153215,
+          64.2628,
+          63.40449,
+          70.16215,
+          60.859855,
+          61.27276,
+          61.347125,
+          62.68426,
+          60.999
+        ]
+      }
+    },
+    "compare_equal_build": {
+      "goose": {
+        "median_ns": 15.15985,
+        "min_ns": 14.518475,
+        "max_ns": 16.513,
+        "samples_ns": [
+          15.756745,
+          14.77154,
+          16.513,
+          15.0682,
+          14.94069,
+          14.518475,
+          15.15985,
+          15.69316,
+          15.87311
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 38.495595,
+        "min_ns": 36.400775,
+        "max_ns": 41.756285,
+        "samples_ns": [
+          39.634585,
+          41.756285,
+          38.41275,
+          36.61299,
+          36.969285,
+          36.400775,
+          38.495595,
+          40.93686,
+          39.79009
+        ]
+      },
+      "rust": {
+        "median_ns": 5.624235,
+        "min_ns": 5.4574,
+        "max_ns": 6.236395,
+        "samples_ns": [
+          6.117735,
+          5.4574,
+          5.65869,
+          5.597455,
+          5.499175,
+          5.624235,
+          5.49714,
+          6.236395,
+          5.939855
+        ]
+      },
+      "node": {
+        "median_ns": 41.649195,
+        "min_ns": 34.033205,
+        "max_ns": 54.799525,
+        "samples_ns": [
+          42.96973,
+          36.26022,
+          41.649195,
+          54.799525,
+          51.47085,
+          34.033205,
+          38.678815,
+          46.16291,
+          38.2292
+        ]
+      }
+    },
+    "compare_long_pre_early": {
+      "goose": {
+        "median_ns": 12.529365,
+        "min_ns": 12.21089,
+        "max_ns": 13.829635,
+        "samples_ns": [
+          12.56282,
+          12.213375,
+          12.90804,
+          12.529365,
+          12.436395,
+          12.21089,
+          12.39634,
+          13.829635,
+          13.41718
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 83.41511,
+        "min_ns": 79.60931,
+        "max_ns": 88.396245,
+        "samples_ns": [
+          85.31328,
+          83.41511,
+          79.98811,
+          79.60931,
+          86.67474,
+          83.21756,
+          88.396245,
+          85.543615,
+          82.60105
+        ]
+      },
+      "rust": {
+        "median_ns": 87.553315,
+        "min_ns": 83.3921,
+        "max_ns": 96.244145,
+        "samples_ns": [
+          87.94429,
+          86.465065,
+          92.436195,
+          83.8168,
+          83.3921,
+          84.84487,
+          87.553315,
+          89.94775,
+          96.244145
+        ]
+      },
+      "node": {
+        "median_ns": 240.016905,
+        "min_ns": 211.48422,
+        "max_ns": 253.980105,
+        "samples_ns": [
+          236.125975,
+          248.091075,
+          236.748075,
+          246.287505,
+          243.94498,
+          229.746155,
+          240.016905,
+          253.980105,
+          211.48422
+        ]
+      }
+    },
+    "compare_long_pre_late": {
+      "goose": {
+        "median_ns": 126.71275,
+        "min_ns": 124.38267,
+        "max_ns": 130.54088,
+        "samples_ns": [
+          126.82664,
+          126.71275,
+          124.80299,
+          128.10424,
+          124.88319,
+          124.38267,
+          126.574685,
+          126.866585,
+          130.54088
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 333.999785,
+        "min_ns": 328.577095,
+        "max_ns": 347.467825,
+        "samples_ns": [
+          347.467825,
+          332.202435,
+          337.646175,
+          328.577095,
+          328.588485,
+          338.263285,
+          346.140875,
+          330.631215,
+          333.999785
+        ]
+      },
+      "rust": {
+        "median_ns": 94.4973,
+        "min_ns": 92.23387,
+        "max_ns": 98.195825,
+        "samples_ns": [
+          94.4973,
+          95.402735,
+          92.32111,
+          92.23387,
+          92.518665,
+          94.210115,
+          97.375665,
+          98.195825,
+          98.131205
+        ]
+      },
+      "node": {
+        "median_ns": 315.014665,
+        "min_ns": 278.012945,
+        "max_ns": 464.8446,
+        "samples_ns": [
+          309.596405,
+          315.80003,
+          315.014665,
+          331.69483,
+          321.78051,
+          303.57174,
+          290.44739,
+          464.8446,
+          278.012945
+        ]
+      }
+    },
+    "requirement_exact_warm": {
+      "goose": {
+        "median_ns": 91.605955,
+        "min_ns": 89.65168,
+        "max_ns": 93.60947,
+        "samples_ns": [
+          91.919915,
+          91.50874,
+          89.65168,
+          92.150465,
+          90.440505,
+          93.60947,
+          92.358315,
+          90.25136,
+          91.605955
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 164.22082,
+        "min_ns": 154.46402,
+        "max_ns": 167.8311,
+        "samples_ns": [
+          166.495195,
+          154.46402,
+          164.22082,
+          164.693275,
+          156.12645,
+          157.88089,
+          167.8311,
+          165.447485,
+          159.68519
+        ]
+      },
+      "rust": {
+        "median_ns": 50.642905,
+        "min_ns": 48.641485,
+        "max_ns": 54.98203,
+        "samples_ns": [
+          53.54581,
+          48.7731,
+          49.176735,
+          48.641485,
+          48.758105,
+          50.642905,
+          52.778825,
+          54.98203,
+          51.95449
+        ]
+      },
+      "node": {
+        "median_ns": 731.548685,
+        "min_ns": 689.7548,
+        "max_ns": 759.15318,
+        "samples_ns": [
+          731.78304,
+          717.045845,
+          731.548685,
+          721.713405,
+          732.05442,
+          689.7548,
+          711.11027,
+          759.15318,
+          738.485095
+        ]
+      }
+    },
+    "requirement_caret_warm": {
+      "goose": {
+        "median_ns": 94.05336,
+        "min_ns": 89.820785,
+        "max_ns": 99.69059,
+        "samples_ns": [
+          95.051985,
+          95.147445,
+          89.820785,
+          91.219675,
+          92.07924,
+          95.239975,
+          99.69059,
+          93.26973,
+          94.05336
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 159.28873,
+        "min_ns": 154.05948,
+        "max_ns": 168.35629,
+        "samples_ns": [
+          161.70097,
+          155.804825,
+          159.793735,
+          159.28873,
+          156.55611,
+          154.05948,
+          168.35629,
+          158.43418,
+          160.367735
+        ]
+      },
+      "rust": {
+        "median_ns": 50.124405,
+        "min_ns": 48.65628,
+        "max_ns": 52.17103,
+        "samples_ns": [
+          51.61358,
+          48.65628,
+          50.124405,
+          50.142705,
+          48.660855,
+          48.851205,
+          51.421205,
+          52.17103,
+          49.106845
+        ]
+      },
+      "node": {
+        "median_ns": 660.849695,
+        "min_ns": 619.6421,
+        "max_ns": 724.19698,
+        "samples_ns": [
+          666.532725,
+          660.85459,
+          660.849695,
+          651.43716,
+          647.24179,
+          724.19698,
+          619.6421,
+          703.55858,
+          623.374635
+        ]
+      }
+    },
+    "requirement_and_warm": {
+      "goose": {
+        "median_ns": 127.146375,
+        "min_ns": 123.074685,
+        "max_ns": 129.261195,
+        "samples_ns": [
+          127.146375,
+          128.67214,
+          123.074685,
+          129.261195,
+          123.870845,
+          127.3161,
+          125.62796,
+          126.85238,
+          127.39358
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 255.977845,
+        "min_ns": 247.812345,
+        "max_ns": 284.810855,
+        "samples_ns": [
+          258.992485,
+          249.458905,
+          252.268955,
+          255.790175,
+          284.810855,
+          247.812345,
+          261.807515,
+          262.202255,
+          255.977845
+        ]
+      },
+      "rust": {
+        "median_ns": 71.22774,
+        "min_ns": 69.819315,
+        "max_ns": 78.001645,
+        "samples_ns": [
+          73.569825,
+          71.22774,
+          78.001645,
+          69.914705,
+          74.80987,
+          70.309605,
+          72.935695,
+          69.819315,
+          70.04285
+        ]
+      },
+      "node": {
+        "median_ns": 999.560895,
+        "min_ns": 965.494875,
+        "max_ns": 1066.584285,
+        "samples_ns": [
+          1045.983565,
+          1066.584285,
+          965.494875,
+          998.052885,
+          999.560895,
+          974.2478,
+          1002.402815,
+          1009.35494,
+          966.344525
+        ]
+      }
+    },
+    "match_release": {
+      "goose": {
+        "median_ns": 19.956895,
+        "min_ns": 19.076775,
+        "max_ns": 22.6842,
+        "samples_ns": [
+          19.089395,
+          19.75783,
+          19.079765,
+          22.6842,
+          19.076775,
+          20.950145,
+          19.956895,
+          20.42117,
+          20.040525
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 21.560085,
+        "min_ns": 21.47871,
+        "max_ns": 22.792165,
+        "samples_ns": [
+          22.23386,
+          21.742095,
+          21.559365,
+          21.560085,
+          21.55145,
+          21.493215,
+          22.225955,
+          21.47871,
+          22.792165
+        ]
+      },
+      "rust": {
+        "median_ns": 7.603365,
+        "min_ns": 7.52313,
+        "max_ns": 8.947235,
+        "samples_ns": [
+          8.947235,
+          7.52313,
+          7.55872,
+          7.741665,
+          7.568155,
+          7.5745,
+          7.98274,
+          7.603365,
+          8.16424
+        ]
+      },
+      "node": {
+        "median_ns": 196.95177,
+        "min_ns": 182.74622,
+        "max_ns": 232.678615,
+        "samples_ns": [
+          204.01119,
+          201.964965,
+          196.95177,
+          192.33914,
+          201.53075,
+          182.74622,
+          193.227695,
+          232.678615,
+          195.90438
+        ]
+      }
+    },
+    "match_prerelease": {
+      "goose": {
+        "median_ns": 40.507155,
+        "min_ns": 38.634035,
+        "max_ns": 42.515115,
+        "samples_ns": [
+          39.680225,
+          39.38757,
+          39.241495,
+          41.67355,
+          38.634035,
+          41.07025,
+          40.507155,
+          40.530125,
+          42.515115
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 60.948185,
+        "min_ns": 59.44511,
+        "max_ns": 64.798605,
+        "samples_ns": [
+          60.948185,
+          62.03909,
+          60.926205,
+          59.44511,
+          60.416825,
+          62.04625,
+          62.747955,
+          60.421685,
+          64.798605
+        ]
+      },
+      "rust": {
+        "median_ns": 36.86535,
+        "min_ns": 36.15348,
+        "max_ns": 38.3335,
+        "samples_ns": [
+          36.52145,
+          36.15348,
+          38.3335,
+          36.719935,
+          36.86535,
+          37.028075,
+          37.434315,
+          38.220385,
+          36.29821
+        ]
+      },
+      "node": {
+        "median_ns": 244.375315,
+        "min_ns": 232.028995,
+        "max_ns": 265.93685,
+        "samples_ns": [
+          256.19175,
+          265.93685,
+          241.87511,
+          244.375315,
+          251.47174,
+          232.028995,
+          237.25884,
+          249.187915,
+          235.463435
+        ]
+      }
+    },
+    "match_reject": {
+      "goose": {
+        "median_ns": 12.38751,
+        "min_ns": 12.07208,
+        "max_ns": 12.86263,
+        "samples_ns": [
+          12.86263,
+          12.07208,
+          12.38751,
+          12.142585,
+          12.08627,
+          12.440625,
+          12.60835,
+          12.278625,
+          12.400625
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 13.11523,
+        "min_ns": 12.206125,
+        "max_ns": 15.177785,
+        "samples_ns": [
+          12.26822,
+          13.11523,
+          13.188495,
+          13.284515,
+          12.206125,
+          12.67916,
+          13.224485,
+          12.25073,
+          15.177785
+        ]
+      },
+      "rust": {
+        "median_ns": 5.790105,
+        "min_ns": 5.766995,
+        "max_ns": 6.188245,
+        "samples_ns": [
+          5.790105,
+          5.77356,
+          6.188245,
+          6.13486,
+          5.80851,
+          5.78896,
+          5.85804,
+          5.766995,
+          5.769845
+        ]
+      },
+      "node": {
+        "median_ns": 226.3948,
+        "min_ns": 195.57027,
+        "max_ns": 234.210795,
+        "samples_ns": [
+          229.95988,
+          227.3224,
+          215.90341,
+          226.3948,
+          231.513625,
+          195.57027,
+          200.65301,
+          234.210795,
+          224.599905
+        ]
+      }
+    },
+    "match_many": {
+      "goose": {
+        "median_ns": 216.8152,
+        "min_ns": 205.68454,
+        "max_ns": 237.842475,
+        "samples_ns": [
+          211.572815,
+          205.68454,
+          237.842475,
+          216.8152,
+          207.218575,
+          208.95011,
+          220.071015,
+          220.149285,
+          223.512675
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 208.880535,
+        "min_ns": 200.778985,
+        "max_ns": 217.85107,
+        "samples_ns": [
+          208.880535,
+          205.07955,
+          211.725075,
+          202.29868,
+          210.418085,
+          200.778985,
+          210.181325,
+          205.234305,
+          217.85107
+        ]
+      },
+      "rust": {
+        "median_ns": 83.863495,
+        "min_ns": 82.23374,
+        "max_ns": 85.409615,
+        "samples_ns": [
+          85.409615,
+          83.3096,
+          83.00903,
+          82.23374,
+          82.726645,
+          83.863495,
+          84.55101,
+          84.918365,
+          84.49931
+        ]
+      },
+      "node": {
+        "median_ns": 1526.43058,
+        "min_ns": 1359.94481,
+        "max_ns": 1607.65529,
+        "samples_ns": [
+          1603.557105,
+          1607.65529,
+          1526.43058,
+          1537.21873,
+          1561.701095,
+          1359.94481,
+          1402.09205,
+          1492.299825,
+          1512.435205
+        ]
+      }
+    },
+    "requirement_caret_miss": {
+      "goose": {
+        "median_ns": 88.81873,
+        "min_ns": 85.66039,
+        "max_ns": 95.56007,
+        "samples_ns": [
+          85.714525,
+          88.81873,
+          88.920835,
+          85.66039,
+          87.000425,
+          85.980635,
+          95.56007,
+          89.901105,
+          90.487355
+        ]
+      },
+      "goose_reference": {
+        "median_ns": 151.255205,
+        "min_ns": 146.0139,
+        "max_ns": 168.89935,
+        "samples_ns": [
+          156.90426,
+          150.713775,
+          150.20136,
+          152.16285,
+          150.49786,
+          146.0139,
+          168.89935,
+          154.477875,
+          151.255205
+        ]
+      },
+      "rust": {
+        "median_ns": 51.064285,
+        "min_ns": 49.613855,
+        "max_ns": 55.71696,
+        "samples_ns": [
+          55.71696,
+          53.03325,
+          49.821805,
+          50.57002,
+          49.613855,
+          50.893375,
+          51.064285,
+          54.748205,
+          53.300155
+        ]
+      },
+      "node": {
+        "median_ns": 13526.93337,
+        "min_ns": 13042.846815,
+        "max_ns": 14216.067445,
+        "samples_ns": [
+          13983.678755,
+          13298.69128,
+          14216.067445,
+          13526.93337,
+          13460.834345,
+          13364.098945,
+          13895.450135,
+          13667.34362,
+          13042.846815
+        ]
+      }
+    }
+  },
+  "raw_rounds": [
+    {
+      "order": [
+        "goose",
+        "rust",
+        "node",
+        "goose_reference"
+      ],
+      "total_ns": {
+        "goose": {
+          "parse_release": 7124882,
+          "parse_pre_short": 10518785,
+          "parse_pre_long": 19571950,
+          "parse_build_long": 15152441,
+          "parse_invalid": 5434130,
+          "compare_release": 2788611,
+          "compare_pre": 2675831,
+          "compare_equal_build": 3151349,
+          "compare_long_pre_early": 2512564,
+          "compare_long_pre_late": 25365328,
+          "requirement_exact_warm": 18383983,
+          "requirement_caret_warm": 19010397,
+          "requirement_and_warm": 25429275,
+          "match_release": 3817879,
+          "match_prerelease": 7936045,
+          "match_reject": 2572526,
+          "match_many": 42314563,
+          "requirement_caret_miss": 17142905
+        },
+        "rust": {
+          "parse_release": 4981345,
+          "parse_pre_short": 13666562,
+          "parse_pre_long": 70405537,
+          "parse_build_long": 95864635,
+          "parse_invalid": 5511076,
+          "compare_release": 978264,
+          "compare_pre": 5687239,
+          "compare_equal_build": 1223547,
+          "compare_long_pre_early": 17588858,
+          "compare_long_pre_late": 18899460,
+          "requirement_exact_warm": 10709162,
+          "requirement_caret_warm": 10322716,
+          "requirement_and_warm": 14713965,
+          "match_release": 1789447,
+          "match_prerelease": 7304290,
+          "match_reject": 1158021,
+          "match_many": 17081923,
+          "requirement_caret_miss": 11143392
+        },
+        "node": {
+          "parse_release": 51192883,
+          "parse_pre_short": 196737401,
+          "parse_pre_long": 344968834,
+          "parse_build_long": 204692694,
+          "parse_invalid": 1299074216,
+          "compare_release": 3853736,
+          "compare_pre": 12230643,
+          "compare_equal_build": 8593946,
+          "compare_long_pre_early": 47225195,
+          "compare_long_pre_late": 61919281,
+          "requirement_exact_warm": 146356608,
+          "requirement_caret_warm": 133306545,
+          "requirement_and_warm": 209196713,
+          "match_release": 40802238,
+          "match_prerelease": 51238350,
+          "match_reject": 45991976,
+          "match_many": 320711421,
+          "requirement_caret_miss": 2796735751
+        },
+        "goose_reference": {
+          "parse_release": 16813906,
+          "parse_pre_short": 19284290,
+          "parse_pre_long": 27492473,
+          "parse_build_long": 23035536,
+          "parse_invalid": 8718728,
+          "compare_release": 2324692,
+          "compare_pre": 5905821,
+          "compare_equal_build": 7926917,
+          "compare_long_pre_early": 17062656,
+          "compare_long_pre_late": 69493565,
+          "requirement_exact_warm": 33299039,
+          "requirement_caret_warm": 32340194,
+          "requirement_and_warm": 51798497,
+          "match_release": 4446772,
+          "match_prerelease": 12189637,
+          "match_reject": 2453644,
+          "match_many": 41776107,
+          "requirement_caret_miss": 31380852
+        }
+      }
+    },
+    {
+      "order": [
+        "goose_reference",
+        "goose",
+        "rust",
+        "node"
+      ],
+      "total_ns": {
+        "goose_reference": {
+          "parse_release": 16624011,
+          "parse_pre_short": 18873503,
+          "parse_pre_long": 27248873,
+          "parse_build_long": 23797954,
+          "parse_invalid": 8803192,
+          "compare_release": 2480271,
+          "compare_pre": 6138861,
+          "compare_equal_build": 8351257,
+          "compare_long_pre_early": 16683022,
+          "compare_long_pre_late": 66440487,
+          "requirement_exact_warm": 30892804,
+          "requirement_caret_warm": 31160965,
+          "requirement_and_warm": 49891781,
+          "match_release": 4348419,
+          "match_prerelease": 12407818,
+          "match_reject": 2623046,
+          "match_many": 41015910,
+          "requirement_caret_miss": 30142755
+        },
+        "goose": {
+          "parse_release": 6775758,
+          "parse_pre_short": 10559194,
+          "parse_pre_long": 18762766,
+          "parse_build_long": 14534108,
+          "parse_invalid": 5384775,
+          "compare_release": 2373833,
+          "compare_pre": 2505926,
+          "compare_equal_build": 2954308,
+          "compare_long_pre_early": 2442675,
+          "compare_long_pre_late": 25342550,
+          "requirement_exact_warm": 18301748,
+          "requirement_caret_warm": 19029489,
+          "requirement_and_warm": 25734428,
+          "match_release": 3951566,
+          "match_prerelease": 7877514,
+          "match_reject": 2414416,
+          "match_many": 41136908,
+          "requirement_caret_miss": 17763746
+        },
+        "rust": {
+          "parse_release": 5213586,
+          "parse_pre_short": 13858462,
+          "parse_pre_long": 65447992,
+          "parse_build_long": 91540035,
+          "parse_invalid": 5696476,
+          "compare_release": 945198,
+          "compare_pre": 5249347,
+          "compare_equal_build": 1091480,
+          "compare_long_pre_early": 17293013,
+          "compare_long_pre_late": 19080547,
+          "requirement_exact_warm": 9754620,
+          "requirement_caret_warm": 9731256,
+          "requirement_and_warm": 14245548,
+          "match_release": 1504626,
+          "match_prerelease": 7230696,
+          "match_reject": 1154712,
+          "match_many": 16661920,
+          "requirement_caret_miss": 10606650
+        },
+        "node": {
+          "parse_release": 51602144,
+          "parse_pre_short": 195609026,
+          "parse_pre_long": 343691208,
+          "parse_build_long": 202648874,
+          "parse_invalid": 1267316691,
+          "compare_release": 3897857,
+          "compare_pre": 12852560,
+          "compare_equal_build": 7252044,
+          "compare_long_pre_early": 49618215,
+          "compare_long_pre_late": 63160006,
+          "requirement_exact_warm": 143409169,
+          "requirement_caret_warm": 132170918,
+          "requirement_and_warm": 213316857,
+          "match_release": 40392993,
+          "match_prerelease": 53187370,
+          "match_reject": 45464480,
+          "match_many": 321531058,
+          "requirement_caret_miss": 2659738256
+        }
+      }
+    },
+    {
+      "order": [
+        "rust",
+        "goose",
+        "node",
+        "goose_reference"
+      ],
+      "total_ns": {
+        "rust": {
+          "parse_release": 6282557,
+          "parse_pre_short": 15819386,
+          "parse_pre_long": 69864117,
+          "parse_build_long": 94339249,
+          "parse_invalid": 6015484,
+          "compare_release": 1180500,
+          "compare_pre": 6187055,
+          "compare_equal_build": 1131738,
+          "compare_long_pre_early": 18487239,
+          "compare_long_pre_late": 18464222,
+          "requirement_exact_warm": 9835347,
+          "requirement_caret_warm": 10024881,
+          "requirement_and_warm": 15600329,
+          "match_release": 1511744,
+          "match_prerelease": 7666700,
+          "match_reject": 1237649,
+          "match_many": 16601806,
+          "requirement_caret_miss": 9964361
+        },
+        "goose": {
+          "parse_release": 6716632,
+          "parse_pre_short": 10614942,
+          "parse_pre_long": 18901261,
+          "parse_build_long": 16391702,
+          "parse_invalid": 5517421,
+          "compare_release": 2389863,
+          "compare_pre": 2538897,
+          "compare_equal_build": 3302600,
+          "compare_long_pre_early": 2581608,
+          "compare_long_pre_late": 24960598,
+          "requirement_exact_warm": 17930336,
+          "requirement_caret_warm": 17964157,
+          "requirement_and_warm": 24614937,
+          "match_release": 3815953,
+          "match_prerelease": 7848299,
+          "match_reject": 2477502,
+          "match_many": 47568495,
+          "requirement_caret_miss": 17784167
+        },
+        "node": {
+          "parse_release": 57825586,
+          "parse_pre_short": 203209237,
+          "parse_pre_long": 345091235,
+          "parse_build_long": 207739762,
+          "parse_invalid": 1222000985,
+          "compare_release": 3698567,
+          "compare_pre": 12680898,
+          "compare_equal_build": 8329839,
+          "compare_long_pre_early": 47349615,
+          "compare_long_pre_late": 63002933,
+          "requirement_exact_warm": 146309737,
+          "requirement_caret_warm": 132169939,
+          "requirement_and_warm": 193098975,
+          "match_release": 39390354,
+          "match_prerelease": 48375022,
+          "match_reject": 43180682,
+          "match_many": 305286116,
+          "requirement_caret_miss": 2843213489
+        },
+        "goose_reference": {
+          "parse_release": 17655539,
+          "parse_pre_short": 19326877,
+          "parse_pre_long": 28630641,
+          "parse_build_long": 22789738,
+          "parse_invalid": 8824044,
+          "compare_release": 2481862,
+          "compare_pre": 5699098,
+          "compare_equal_build": 7682550,
+          "compare_long_pre_early": 15997622,
+          "compare_long_pre_late": 67529235,
+          "requirement_exact_warm": 32844164,
+          "requirement_caret_warm": 31958747,
+          "requirement_and_warm": 50453791,
+          "match_release": 4311873,
+          "match_prerelease": 12185241,
+          "match_reject": 2637699,
+          "match_many": 42345015,
+          "requirement_caret_miss": 30040272
+        }
+      }
+    },
+    {
+      "order": [
+        "node",
+        "rust",
+        "goose_reference",
+        "goose"
+      ],
+      "total_ns": {
+        "node": {
+          "parse_release": 53144765,
+          "parse_pre_short": 192302002,
+          "parse_pre_long": 351276972,
+          "parse_build_long": 205953488,
+          "parse_invalid": 1326187538,
+          "compare_release": 9255007,
+          "compare_pre": 14032430,
+          "compare_equal_build": 10959905,
+          "compare_long_pre_early": 49257501,
+          "compare_long_pre_late": 66338966,
+          "requirement_exact_warm": 144342681,
+          "requirement_caret_warm": 130287432,
+          "requirement_and_warm": 199610577,
+          "match_release": 38467828,
+          "match_prerelease": 48875063,
+          "match_reject": 45278960,
+          "match_many": 307443746,
+          "requirement_caret_miss": 2705386674
+        },
+        "rust": {
+          "parse_release": 5417171,
+          "parse_pre_short": 14312388,
+          "parse_pre_long": 67676603,
+          "parse_build_long": 90885768,
+          "parse_invalid": 5868826,
+          "compare_release": 954304,
+          "compare_pre": 5317470,
+          "compare_equal_build": 1119491,
+          "compare_long_pre_early": 16763360,
+          "compare_long_pre_late": 18446774,
+          "requirement_exact_warm": 9728297,
+          "requirement_caret_warm": 10028541,
+          "requirement_and_warm": 13982941,
+          "match_release": 1548333,
+          "match_prerelease": 7343987,
+          "match_reject": 1226972,
+          "match_many": 16446748,
+          "requirement_caret_miss": 10114004
+        },
+        "goose_reference": {
+          "parse_release": 15169324,
+          "parse_pre_short": 17856552,
+          "parse_pre_long": 26905937,
+          "parse_build_long": 23104472,
+          "parse_invalid": 8204924,
+          "compare_release": 2242904,
+          "compare_pre": 5721430,
+          "compare_equal_build": 7322598,
+          "compare_long_pre_early": 15921862,
+          "compare_long_pre_late": 65715419,
+          "requirement_exact_warm": 32938655,
+          "requirement_caret_warm": 31857746,
+          "requirement_and_warm": 51158035,
+          "match_release": 4312017,
+          "match_prerelease": 11889022,
+          "match_reject": 2656903,
+          "match_many": 40459736,
+          "requirement_caret_miss": 30432570
+        },
+        "goose": {
+          "parse_release": 6683824,
+          "parse_pre_short": 10027143,
+          "parse_pre_long": 18262469,
+          "parse_build_long": 14706212,
+          "parse_invalid": 6004792,
+          "compare_release": 2520839,
+          "compare_pre": 2660700,
+          "compare_equal_build": 3013640,
+          "compare_long_pre_early": 2505873,
+          "compare_long_pre_late": 25620848,
+          "requirement_exact_warm": 18430093,
+          "requirement_caret_warm": 18243935,
+          "requirement_and_warm": 25852239,
+          "match_release": 4536840,
+          "match_prerelease": 8334710,
+          "match_reject": 2428517,
+          "match_many": 43363040,
+          "requirement_caret_miss": 17132078
+        }
+      }
+    },
+    {
+      "order": [
+        "rust",
+        "node",
+        "goose_reference",
+        "goose"
+      ],
+      "total_ns": {
+        "rust": {
+          "parse_release": 4978462,
+          "parse_pre_short": 13942080,
+          "parse_pre_long": 67733404,
+          "parse_build_long": 93192069,
+          "parse_invalid": 5785605,
+          "compare_release": 1069350,
+          "compare_pre": 5479932,
+          "compare_equal_build": 1099835,
+          "compare_long_pre_early": 16678420,
+          "compare_long_pre_late": 18503733,
+          "requirement_exact_warm": 9751621,
+          "requirement_caret_warm": 9732171,
+          "requirement_and_warm": 14961974,
+          "match_release": 1513631,
+          "match_prerelease": 7373070,
+          "match_reject": 1161702,
+          "match_many": 16545329,
+          "requirement_caret_miss": 9922771
+        },
+        "node": {
+          "parse_release": 51018753,
+          "parse_pre_short": 189942926,
+          "parse_pre_long": 344774229,
+          "parse_build_long": 204357192,
+          "parse_invalid": 1216378921,
+          "compare_release": 3696602,
+          "compare_pre": 12171971,
+          "compare_equal_build": 10294170,
+          "compare_long_pre_early": 48788996,
+          "compare_long_pre_late": 64356102,
+          "requirement_exact_warm": 146410884,
+          "requirement_caret_warm": 129448358,
+          "requirement_and_warm": 199912179,
+          "match_release": 40306150,
+          "match_prerelease": 50294348,
+          "match_reject": 46302725,
+          "match_many": 312340219,
+          "requirement_caret_miss": 2692166869
+        },
+        "goose_reference": {
+          "parse_release": 16230015,
+          "parse_pre_short": 18732156,
+          "parse_pre_long": 28966545,
+          "parse_build_long": 23760765,
+          "parse_invalid": 8631299,
+          "compare_release": 2452945,
+          "compare_pre": 6145236,
+          "compare_equal_build": 7393857,
+          "compare_long_pre_early": 17334948,
+          "compare_long_pre_late": 65717697,
+          "requirement_exact_warm": 31225290,
+          "requirement_caret_warm": 31311222,
+          "requirement_and_warm": 56962171,
+          "match_release": 4310290,
+          "match_prerelease": 12083365,
+          "match_reject": 2441225,
+          "match_many": 42083617,
+          "requirement_caret_miss": 30099572
+        },
+        "goose": {
+          "parse_release": 6614409,
+          "parse_pre_short": 9835882,
+          "parse_pre_long": 17929926,
+          "parse_build_long": 14857141,
+          "parse_invalid": 5289831,
+          "compare_release": 2331289,
+          "compare_pre": 2480472,
+          "compare_equal_build": 2988138,
+          "compare_long_pre_early": 2487279,
+          "compare_long_pre_late": 24976638,
+          "requirement_exact_warm": 18088101,
+          "requirement_caret_warm": 18415848,
+          "requirement_and_warm": 24774169,
+          "match_release": 3815355,
+          "match_prerelease": 7726807,
+          "match_reject": 2417254,
+          "match_many": 41443715,
+          "requirement_caret_miss": 17400085
+        }
+      }
+    },
+    {
+      "order": [
+        "goose_reference",
+        "goose",
+        "rust",
+        "node"
+      ],
+      "total_ns": {
+        "goose_reference": {
+          "parse_release": 20125133,
+          "parse_pre_short": 23081921,
+          "parse_pre_long": 28548728,
+          "parse_build_long": 26856844,
+          "parse_invalid": 13385338,
+          "compare_release": 2477404,
+          "compare_pre": 6039393,
+          "compare_equal_build": 7280155,
+          "compare_long_pre_early": 16643512,
+          "compare_long_pre_late": 67652657,
+          "requirement_exact_warm": 31576178,
+          "requirement_caret_warm": 30811896,
+          "requirement_and_warm": 49562469,
+          "match_release": 4298643,
+          "match_prerelease": 12409250,
+          "match_reject": 2535832,
+          "match_many": 40155797,
+          "requirement_caret_miss": 29202780
+        },
+        "goose": {
+          "parse_release": 6703485,
+          "parse_pre_short": 9923335,
+          "parse_pre_long": 17895300,
+          "parse_build_long": 14391205,
+          "parse_invalid": 5170007,
+          "compare_release": 2323113,
+          "compare_pre": 2508970,
+          "compare_equal_build": 2903695,
+          "compare_long_pre_early": 2442178,
+          "compare_long_pre_late": 24876534,
+          "requirement_exact_warm": 18721894,
+          "requirement_caret_warm": 19047995,
+          "requirement_and_warm": 25463220,
+          "match_release": 4190029,
+          "match_prerelease": 8214050,
+          "match_reject": 2488125,
+          "match_many": 41790022,
+          "requirement_caret_miss": 17196127
+        },
+        "rust": {
+          "parse_release": 5115482,
+          "parse_pre_short": 13485335,
+          "parse_pre_long": 66365520,
+          "parse_build_long": 94735868,
+          "parse_invalid": 6369236,
+          "compare_release": 1066200,
+          "compare_pre": 5395728,
+          "compare_equal_build": 1124847,
+          "compare_long_pre_early": 16968974,
+          "compare_long_pre_late": 18842023,
+          "requirement_exact_warm": 10128581,
+          "requirement_caret_warm": 9770241,
+          "requirement_and_warm": 14061921,
+          "match_release": 1514900,
+          "match_prerelease": 7405615,
+          "match_reject": 1157792,
+          "match_many": 16772699,
+          "requirement_caret_miss": 10178675
+        },
+        "node": {
+          "parse_release": 54156748,
+          "parse_pre_short": 205685444,
+          "parse_pre_long": 361352568,
+          "parse_build_long": 215912402,
+          "parse_invalid": 1406807158,
+          "compare_release": 4944295,
+          "compare_pre": 12254552,
+          "compare_equal_build": 6806641,
+          "compare_long_pre_early": 45949231,
+          "compare_long_pre_late": 60714348,
+          "requirement_exact_warm": 137950960,
+          "requirement_caret_warm": 144839396,
+          "requirement_and_warm": 194849560,
+          "match_release": 36549244,
+          "match_prerelease": 46405799,
+          "match_reject": 39114054,
+          "match_many": 271988962,
+          "requirement_caret_miss": 2672819789
+        }
+      }
+    },
+    {
+      "order": [
+        "node",
+        "rust",
+        "goose_reference",
+        "goose"
+      ],
+      "total_ns": {
+        "node": {
+          "parse_release": 51551756,
+          "parse_pre_short": 194155240,
+          "parse_pre_long": 329867724,
+          "parse_build_long": 194312097,
+          "parse_invalid": 1189616463,
+          "compare_release": 3768551,
+          "compare_pre": 12269425,
+          "compare_equal_build": 7735763,
+          "compare_long_pre_early": 48003381,
+          "compare_long_pre_late": 58089478,
+          "requirement_exact_warm": 142222054,
+          "requirement_caret_warm": 123928420,
+          "requirement_and_warm": 200480563,
+          "match_release": 38645539,
+          "match_prerelease": 47451768,
+          "match_reject": 40130602,
+          "match_many": 280418410,
+          "requirement_caret_miss": 2779090027
+        },
+        "rust": {
+          "parse_release": 5638541,
+          "parse_pre_short": 14859119,
+          "parse_pre_long": 70938769,
+          "parse_build_long": 96374140,
+          "parse_invalid": 5955655,
+          "compare_release": 1002355,
+          "compare_pre": 5681223,
+          "compare_equal_build": 1099428,
+          "compare_long_pre_early": 17510663,
+          "compare_long_pre_late": 19475133,
+          "requirement_exact_warm": 10555765,
+          "requirement_caret_warm": 10284241,
+          "requirement_and_warm": 14587139,
+          "match_release": 1596548,
+          "match_prerelease": 7486863,
+          "match_reject": 1171608,
+          "match_many": 16910202,
+          "requirement_caret_miss": 10212857
+        },
+        "goose_reference": {
+          "parse_release": 15264262,
+          "parse_pre_short": 19346167,
+          "parse_pre_long": 27364402,
+          "parse_build_long": 24067228,
+          "parse_invalid": 8879553,
+          "compare_release": 2258211,
+          "compare_pre": 6443881,
+          "compare_equal_build": 7699119,
+          "compare_long_pre_early": 17679249,
+          "compare_long_pre_late": 69228175,
+          "requirement_exact_warm": 33566220,
+          "requirement_caret_warm": 33671258,
+          "requirement_and_warm": 52361503,
+          "match_release": 4445191,
+          "match_prerelease": 12549591,
+          "match_reject": 2644897,
+          "match_many": 42036265,
+          "requirement_caret_miss": 33779870
+        },
+        "goose": {
+          "parse_release": 6694470,
+          "parse_pre_short": 10884670,
+          "parse_pre_long": 19285954,
+          "parse_build_long": 15059829,
+          "parse_invalid": 5135215,
+          "compare_release": 2417211,
+          "compare_pre": 2670712,
+          "compare_equal_build": 3031970,
+          "compare_long_pre_early": 2479268,
+          "compare_long_pre_late": 25314937,
+          "requirement_exact_warm": 18471663,
+          "requirement_caret_warm": 19938118,
+          "requirement_and_warm": 25125592,
+          "match_release": 3991379,
+          "match_prerelease": 8101431,
+          "match_reject": 2521670,
+          "match_many": 44014203,
+          "requirement_caret_miss": 19112014
+        }
+      }
+    },
+    {
+      "order": [
+        "rust",
+        "node",
+        "goose",
+        "goose_reference"
+      ],
+      "total_ns": {
+        "rust": {
+          "parse_release": 5294430,
+          "parse_pre_short": 14451910,
+          "parse_pre_long": 69714386,
+          "parse_build_long": 91958980,
+          "parse_invalid": 5872296,
+          "compare_release": 1050715,
+          "compare_pre": 5825078,
+          "compare_equal_build": 1247279,
+          "compare_long_pre_early": 17989550,
+          "compare_long_pre_late": 19639165,
+          "requirement_exact_warm": 10996406,
+          "requirement_caret_warm": 10434206,
+          "requirement_and_warm": 13963863,
+          "match_release": 1520673,
+          "match_prerelease": 7644077,
+          "match_reject": 1153399,
+          "match_many": 16983673,
+          "requirement_caret_miss": 10949641
+        },
+        "node": {
+          "parse_release": 50545889,
+          "parse_pre_short": 201682716,
+          "parse_pre_long": 378343788,
+          "parse_build_long": 206112737,
+          "parse_invalid": 1315834347,
+          "compare_release": 3976817,
+          "compare_pre": 12536852,
+          "compare_equal_build": 9232582,
+          "compare_long_pre_early": 50796021,
+          "compare_long_pre_late": 92968920,
+          "requirement_exact_warm": 151830636,
+          "requirement_caret_warm": 140711716,
+          "requirement_and_warm": 201870988,
+          "match_release": 46535723,
+          "match_prerelease": 49837583,
+          "match_reject": 46842159,
+          "match_many": 298459965,
+          "requirement_caret_miss": 2733468724
+        },
+        "goose": {
+          "parse_release": 6941222,
+          "parse_pre_short": 10366512,
+          "parse_pre_long": 20694640,
+          "parse_build_long": 15479284,
+          "parse_invalid": 5704657,
+          "compare_release": 2659050,
+          "compare_pre": 2666280,
+          "compare_equal_build": 3138632,
+          "compare_long_pre_early": 2765927,
+          "compare_long_pre_late": 25373317,
+          "requirement_exact_warm": 18050272,
+          "requirement_caret_warm": 18653946,
+          "requirement_and_warm": 25370476,
+          "match_release": 4084234,
+          "match_prerelease": 8106025,
+          "match_reject": 2455725,
+          "match_many": 44029857,
+          "requirement_caret_miss": 17980221
+        },
+        "goose_reference": {
+          "parse_release": 19660414,
+          "parse_pre_short": 22652843,
+          "parse_pre_long": 28071314,
+          "parse_build_long": 24846776,
+          "parse_invalid": 12151258,
+          "compare_release": 2646373,
+          "compare_pre": 6849301,
+          "compare_equal_build": 8187372,
+          "compare_long_pre_early": 17108723,
+          "compare_long_pre_late": 66126243,
+          "requirement_exact_warm": 33089497,
+          "requirement_caret_warm": 31686836,
+          "requirement_and_warm": 52440451,
+          "match_release": 4295742,
+          "match_prerelease": 12084337,
+          "match_reject": 2450146,
+          "match_many": 41046861,
+          "requirement_caret_miss": 30895575
+        }
+      }
+    },
+    {
+      "order": [
+        "goose",
+        "goose_reference",
+        "rust",
+        "node"
+      ],
+      "total_ns": {
+        "goose": {
+          "parse_release": 7144674,
+          "parse_pre_short": 11120782,
+          "parse_pre_long": 19852197,
+          "parse_build_long": 15218726,
+          "parse_invalid": 5724929,
+          "compare_release": 2449061,
+          "compare_pre": 2667497,
+          "compare_equal_build": 3174622,
+          "compare_long_pre_early": 2683436,
+          "compare_long_pre_late": 26108176,
+          "requirement_exact_warm": 18321191,
+          "requirement_caret_warm": 18810672,
+          "requirement_and_warm": 25478716,
+          "match_release": 4008105,
+          "match_prerelease": 8503023,
+          "match_reject": 2480125,
+          "match_many": 44702535,
+          "requirement_caret_miss": 18097471
+        },
+        "goose_reference": {
+          "parse_release": 19480555,
+          "parse_pre_short": 22591532,
+          "parse_pre_long": 27992242,
+          "parse_build_long": 28028730,
+          "parse_invalid": 13527980,
+          "compare_release": 2625472,
+          "compare_pre": 5791723,
+          "compare_equal_build": 7958018,
+          "compare_long_pre_early": 16520210,
+          "compare_long_pre_late": 66799957,
+          "requirement_exact_warm": 31937038,
+          "requirement_caret_warm": 32073547,
+          "requirement_and_warm": 51195569,
+          "match_release": 4558433,
+          "match_prerelease": 12959721,
+          "match_reject": 3035557,
+          "match_many": 43570214,
+          "requirement_caret_miss": 30251041
+        },
+        "rust": {
+          "parse_release": 5101842,
+          "parse_pre_short": 14416356,
+          "parse_pre_long": 69516289,
+          "parse_build_long": 92746407,
+          "parse_invalid": 6168010,
+          "compare_release": 1035919,
+          "compare_pre": 5361651,
+          "compare_equal_build": 1187971,
+          "compare_long_pre_early": 19248829,
+          "compare_long_pre_late": 19626241,
+          "requirement_exact_warm": 10390898,
+          "requirement_caret_warm": 9821369,
+          "requirement_and_warm": 14008570,
+          "match_release": 1632848,
+          "match_prerelease": 7259642,
+          "match_reject": 1153969,
+          "match_many": 16899862,
+          "requirement_caret_miss": 10660031
+        },
+        "node": {
+          "parse_release": 53121745,
+          "parse_pre_short": 201707729,
+          "parse_pre_long": 347817152,
+          "parse_build_long": 209422926,
+          "parse_invalid": 1221251750,
+          "compare_release": 3788249,
+          "compare_pre": 12199800,
+          "compare_equal_build": 7645840,
+          "compare_long_pre_early": 42296844,
+          "compare_long_pre_late": 55602589,
+          "requirement_exact_warm": 147697019,
+          "requirement_caret_warm": 124674927,
+          "requirement_and_warm": 193268905,
+          "match_release": 39180876,
+          "match_prerelease": 47092687,
+          "match_reject": 44919981,
+          "match_many": 302487041,
+          "requirement_caret_miss": 2608569363
+        }
+      }
+    }
+  ]
+}
