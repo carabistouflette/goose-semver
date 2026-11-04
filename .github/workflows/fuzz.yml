@@ -1,0 +1,74 @@
+name: Seeded fuzz campaigns
+on:
+  schedule:
+    - cron: '37 3 * * 1'
+  workflow_dispatch:
+    inputs:
+      seed:
+        description: Base seed (empty uses the UTC date); both campaigns record their derived seed
+        required: false
+        default: ''
+      seconds:
+        description: Time limit per campaign
+        required: false
+        default: '300'
+      runs:
+        description: Execution limit per campaign
+        required: false
+        default: '5000000'
+permissions:
+  contents: read
+jobs:
+  fuzz:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        campaign: [0, 1]
+    env:
+      FUZZ_INPUT_SEED: ${{ inputs.seed }}
+      FUZZ_INPUT_SECONDS: ${{ inputs.seconds }}
+      FUZZ_INPUT_RUNS: ${{ inputs.runs }}
+      FUZZ_CAMPAIGN: ${{ matrix.campaign }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .toolchain
+          key: goose-${{ runner.os }}-${{ hashFiles('GOOSE_REVISION', 'scripts/setup-goose.sh') }}
+      - run: make setup
+      - name: Select and record bounded campaign parameters
+        run: |
+          python3 - <<'PY'
+          import datetime, os
+          base = int(os.environ.get('FUZZ_INPUT_SEED') or datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%d'))
+          seconds = int(os.environ.get('FUZZ_INPUT_SECONDS') or '300')
+          runs = int(os.environ.get('FUZZ_INPUT_RUNS') or '5000000')
+          if not (1 <= base < 2**32 and 1 <= seconds <= 600 and 1 <= runs <= 100000000):
+              raise SystemExit('campaign parameters outside supported limits')
+          seed = base if os.environ['FUZZ_CAMPAIGN'] == '0' else (base ^ 0x9e3779b9) or 1
+          values = f'FUZZ_SEED={seed}\nFUZZ_SECONDS={seconds}\nFUZZ_RUNS={runs}\n'
+          with open(os.environ['GITHUB_ENV'], 'a') as output:
+              output.write(values)
+          print(values, end='')
+          PY
+      - run: make check property
+      - run: python3 tests/exhaustive.py .build/oracle --seed "$FUZZ_SEED" --random-cases 30000
+      - run: make fuzz FUZZ_SEED="$FUZZ_SEED" FUZZ_SECONDS="$FUZZ_SECONDS" FUZZ_RUNS="$FUZZ_RUNS"
+      - name: Retain evidence, reusable corpus and exact failure inputs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: semver-fuzz-${{ matrix.campaign }}-${{ github.run_id }}
+          if-no-files-found: ignore
+          retention-days: 14
+          path: |
+            .build/fuzz/summary.json
+            .build/fuzz/run.log
+            .build/fuzz/self-test.log
+            .build/fuzz/artifacts/
+            .build/fuzz/corpus/
