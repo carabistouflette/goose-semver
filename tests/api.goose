@@ -269,7 +269,30 @@ fn comparison_fast_paths() {
         ordered(left, right, 1);
     }
 }
+fn requirement_boundaries() {
+    var stable = str(">=0.0.0");
+    for i in 30 { stable.append(",>=0.0.0"); }
+    matching(str(stable, ",<1.2.3-z"), "1.2.3-a", true);
+    matching(str("<1.2.3-z,", stable), "1.2.3-a", true);
+    matching(str(stable, ",<2.0.0"), "1.2.3-a", false);
+    for length in [15, 16, 17, 31, 32, 33, 63, 64, 65] {
+        var target = str("1.2.3-");
+        while target.len < length { target.push('a'); }
+        let prefix = ">=0.0.0, = ";
+        for suffix in [", <2.0.0", " , <2.0.0", "\t, <2.0.0"] {
+            matching(str(prefix, target, suffix), target, true);
+        }
+        for bad in ['\n', '\r', '\0'] {
+            var source = str(prefix, target);
+            source.push(bad as! u8); source.append(", <2.0.0");
+            let rejected, error = semver::parse_requirement(source);
+            assert(error.kind == semver::ErrorKind.Syntax);
+            assert(error.offset == prefix.len + target.len);
+            assert(!rejected.valid && rejected.comparators.len == 0);
+        }
+    }
+}
 fn main() {
-    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates(); numeric_scanners(); comparison_fast_paths();
+    parsing(); precedence(); requirements(); ownership(); limits(); failed_candidates(); numeric_scanners(); comparison_fast_paths(); requirement_boundaries();
     print("semver public API tests passed");
 }

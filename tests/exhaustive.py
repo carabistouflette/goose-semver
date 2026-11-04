@@ -85,6 +85,12 @@ def cases(seed, random_cases):
         for end in (b"", b",", b",bad", b",*", b",<2.0.0-alpha"):
             for candidate in candidates:
                 yield "M", (req + end, candidate)
+    # Admission can come from any comparator, including the last legal slot;
+    # a stable-only conjunction excludes the same otherwise satisfying input.
+    stable = [b">=0.0.0"] * (COMPARATOR_LIMIT - 1)
+    for targets in (stable + [b"<1.2.3-z"], [b"<1.2.3-z"] + stable,
+                    stable + [b"<2.0.0"]):
+        yield "M", (b",".join(targets), b"1.2.3-a")
     for size in (VERSION_LIMIT - 1, VERSION_LIMIT, VERSION_LIMIT + 1):
         target = b"1.2.3-" + b"a" * (size - 6)
         yield "P", (target,)
@@ -105,6 +111,18 @@ def cases(seed, random_cases):
                 payload = b"a" * at + bytes([byte]) + b"a" * (length - at - 1)
                 for prefix in (b"1.2.3-", b"12.3.45+"):
                     yield "P", (prefix + payload,)
+    # Requirement-token scanning has different delimiters from identifier
+    # scanning. Shift the token start and put every byte around block edges;
+    # only comma, SP and TAB may end a target (LF/CR/NUL remain invalid bytes).
+    for length in (15, 16, 17, 31, 32, 33, 63, 64, 65, 127):
+        target = b"1.2.3-" + b"a" * (length - 6)
+        for prefix in (b"=", b">=0.0.0, <= "):
+            for at in sorted({15, 16, 17, 31, 32, 33, length}):
+                if at > length:
+                    continue
+                for byte in range(256):
+                    edited = target[:at] + bytes([byte]) + target[at:]
+                    yield "M", (prefix + edited + b", <2.0.0", b"1.2.3-a")
     for length in (15, 16, 17, 31, 32, 33, 63, 64, 65, 127):
         for tail in (b"", b"a", b"-", b".a", b"+001", b"?", b"\0", b"\xff"):
             yield "P", (b"1.2.3-0" + b"0" * length + tail,)

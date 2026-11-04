@@ -54,6 +54,7 @@ cd goose-semver
 make setup
 make check test
 make security
+make differential # optional: requires Rust/Cargo; uses locked Rust semver 1.0.28
 make fuzz
 make sanitize SANITIZER_CC=gcc
 make sanitize SANITIZER_CC=clang
@@ -89,6 +90,15 @@ artifacts stay under `.build/fuzz`. Run with `FUZZ_RUNS`, `FUZZ_SECONDS` and
 complementing the independent oracle. A reused writable corpus changes mutation
 sequences. These checks supplement each other; they do not prove exhaustive
 correctness.
+
+The optional `make differential` campaign also checks Goose and lockfile-pinned
+Rust semver 1.0.28 independently against the Python model. Its default 59,176 seeded cases
+cover shared explicit/full-version requirement grammar, numeric core boundaries,
+long numeric prereleases, build metadata and prerelease eligibility. It excludes
+known grammar/range differences rather than treating Rust as the specification.
+Cases stream in batches capped at 1,024 cases and 4 MiB, with reproducible hex
+diagnostics on disagreement. This target needs Rust/Cargo and may download the
+locked test dependency; it adds no library runtime dependency.
 
 [Rust/npm comparison](bench/competitor-results.md) · [Benchmark method and measured results](bench/README.md) · [Contributing](CONTRIBUTING.md) ·
 [Security](SECURITY.md) · [Third-party notices](THIRD_PARTY_NOTICES.md) · [Apache-2.0](LICENSE)

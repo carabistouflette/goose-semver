@@ -19,6 +19,7 @@ jobs:
       - run: make setup
       - run: make check test
       - run: make security
+      - run: make differential
       - run: make sanitize SANITIZER_CC=gcc
       - run: make sanitize SANITIZER_CC=clang
       - run: make fuzz

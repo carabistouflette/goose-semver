@@ -64,6 +64,10 @@ bench:
 fuzz:
 	python3 scripts/fuzz.py --goose "$(abspath $(GOOSE))" --cc "$(FUZZ_CC)" --runs $(FUZZ_RUNS) --seconds $(FUZZ_SECONDS) --seed $(FUZZ_SEED)
 
-.PHONY: bench-compare
+.PHONY: bench-compare differential
 bench-compare:
 	python3 bench/competitors/run.py --goose "$(abspath $(GOOSE))" --cc "$(BENCH_CC)" --iterations $(COMPARE_ITERATIONS) --rounds $(COMPARE_ROUNDS) $(COMPARE_FLAGS)
+differential:
+	mkdir -p .build
+	"$(GOOSE)" build tests/oracle.goose --cc "$(CC)" -O2 -o .build/oracle
+	python3 tests/rust_differential.py .build/oracle "$$(python3 bench/competitors/rust_build.py --bin oracle)"
