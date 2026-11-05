@@ -21,8 +21,8 @@ in the checkout, then use `.toolchain/goose/build/goose` in place of `goose`.
 Setup needs Git, CMake 3.27+, Make and C/C++20 compilers; it builds the revision
 in [GOOSE_REVISION](GOOSE_REVISION).
 
-The example imports a neighboring library checkout. In your application's root
-source you can instead pin a remote import:
+The example imports this repository's root by relative path. In your
+application's root source you can instead pin a remote import:
 
 ```goose
 import semver from "carabistouflette/goose-semver@2311ae69a7edacb545f284b02e345be07dd2fb05";

@@ -58,8 +58,9 @@ The one-byte comparison fixture has 64 rotating rows repeating nine adjacent
 unordered numeric pairs in alternating directions, rather than 64 distinct inputs.
 
 The corpus includes explicit one-byte core comparisons and all-multi-digit core
-comparisons/equality controls to expose specialization tradeoffs. Older reports
-retain their original 18-fixture corpus and hashes.
+comparisons/equality controls to expose specialization tradeoffs. The earlier
+[Rust/npm comparison](../competitor-results.md) retains its original 18-fixture
+corpus and hashes.
 
 The common corpus uses ASCII full versions, at most 256 bytes (currently 208),
 and safe-integer **core and numeric prerelease** components. Requirements use

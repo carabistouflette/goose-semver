@@ -29,9 +29,8 @@ currentness. No historical raw report was rewritten.
 
 A fresh public HTTPS clone at v0.1.1 and the documentation checkout both passed
 `make check test GOOSE=/absolute/path/to/goose`. The reused compiler's clean Git
-source matches the full revision in `GOOSE_REVISION`. This checks the examples,
-public API, caller-overload cases, in-process execution and native optimized/debug
-builds. It does not claim a new compiler bootstrap or a new full fuzz campaign.
+source matches the full revision in `GOOSE_REVISION`. This runs the examples in-process and checks the public API and caller-overload
+cases in-process and in native optimized/debug builds. It does not claim a new compiler bootstrap or a new full fuzz campaign.
 
 The pinned quickstart prints:
 

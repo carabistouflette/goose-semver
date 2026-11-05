@@ -14,9 +14,9 @@ make sanitize SANITIZER_CC=clang
 make fuzz FUZZ_RUNS=100000 FUZZ_SECONDS=30 FUZZ_SEED=20261104
 ```
 
-`check` verifies formatting, types and fuzz-report handling. `test` runs the API,
-caller-overload regressions and examples through the in-process runner and native
-optimized/debug builds. `security` adds the independent Python model, hostile
+`check` verifies formatting, types and fuzz-report handling. `test` runs the API
+and caller-overload regressions through the in-process runner and native
+optimized/debug builds. It also runs the examples through the in-process runner. `security` adds the independent Python model, hostile
 inputs and targeted byte/scanner-boundary edits. These checks overlap; case
 counts do not mean exhaustive coverage.
 
