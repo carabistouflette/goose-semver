@@ -1,7 +1,7 @@
-# Contract
+# API contract
 
-Experimental pure-Goose SemVer 2.0.0 library. No I/O, private native code, external runtime dependencies,
-regular expressions, recursion, integer conversion, or implicit coercion.
+This contract applies to v0.1.1 and the current main implementation. The library
+uses Goose and its standard library only. It performs no I/O.
 
 ## Versions
 
@@ -29,7 +29,10 @@ allocation. `format(version) -> u8[>..]` returns the exact accepted spelling.
 ## Requirements
 
 `parse_requirement(text) -> (Requirement, Error)` owns comparator targets.
-Maximum 16384 bytes and 32 comparators inclusive. Grammar:
+Maximum 16384 bytes and 32 comparators inclusive. The public limit constants are
+`MAX_VERSION_BYTES = 4096`, `MAX_REQUIREMENT_BYTES = 16384` and
+`MAX_COMPARATORS = 32`. `Op` has Equal, Greater, GreaterEqual, Less, LessEqual,
+Caret and Tilde variants. Grammar:
 
     requirement = ws ("*" | comparator (ws "," ws comparator)*) ws
     comparator  = ["=" | ">" | ">=" | "<" | "<=" | "^" | "~"] ws version
@@ -65,9 +68,9 @@ Comparison is O(bytes examined); matching O(total target bytes + comparator coun
 * candidate bytes), bounded by the limits above for parsed values. No exact
 allocator budget or recovery from Goose runtime allocation failure is promised.
 
-Sources: https://semver.org/spec/v2.0.0.html (versions and precedence);
-https://docs.rs/semver/1.0.28/semver/struct.VersionReq.html (prerelease eligibility
-convention only). This requirement grammar is deliberately smaller and differs
+Sources: [SemVer 2.0.0](https://semver.org/spec/v2.0.0.html) for versions and
+precedence; [Rust semver 1.0.28](https://docs.rs/semver/1.0.28/semver/struct.VersionReq.html)
+for the prerelease eligibility convention only. This requirement grammar is deliberately smaller and differs
 from Cargo/npm; no compatibility claim is made.
 
 Only the types/constants and functions listed above are supported. Namespace-visible

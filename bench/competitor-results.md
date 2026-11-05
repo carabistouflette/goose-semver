@@ -1,7 +1,11 @@
 # Rust and npm comparison
 
+> Historical measurement: this report predates v0.1.1. Its timings and validation
+> apply only to the recorded sources, not current main or v0.1.1.
+> See the [benchmark index](README.md) for current results and reproduction.
+
 Measured source: `efcfc45197a47b52357531550141e34489aa186d`; previous Goose core:
-`b7dc3aaee7395483e5f56757f3886551634df27d`. Both Goose binaries use the same current harness.
+`b7dc3aaee7395483e5f56757f3886551634df27d`. Both Goose binaries used the same harness for that run.
 Exact dependencies: Rust `semver` **1.0.28**, npm `semver` **7.8.6** (locked).
 
 On this machine and corpus, Goose has lower process medians in **18/18**

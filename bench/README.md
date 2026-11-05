@@ -1,58 +1,71 @@
 # Benchmarks
 
-[Latest Rust/npm decimal audit](decimal-audit.md) · [Earlier Rust/npm results](competitor-results.md) · [Reproduce the comparison](competitors/README.md)
+The benchmark results describe specific inputs on one shared Linux machine.
+They are not an overall ranking or a prediction of application performance.
+Comparison and matching reuse parsed values. Parsing includes result creation
+and disposal. Full methods, source identities, raw samples and slower results
+are retained in each report.
 
-Run `make bench BENCH_ITERATIONS=10000`. It builds with the pinned Goose compiler,
-GCC and `-O2`; override `BENCH_CC` to select another compiler. `BENCH_CPU` can
-select an allowed CPU explicitly; otherwise the first allowed CPU is used.
+## Current implementation
 
-The twenty-five fixtures cover short and maximal-length version parsing, short,
-32-comparator and long-target requirements; equal, early/late-differing and
-many-identifier prereleases; large numeric cores; many-comparator success and
-early failure; and late rejection of a maximal-length version, numeric-core parsing, long numeric
-prerelease comparison at both ends, early leading-zero rejection, release matching
-and repeated long targets. Short equality
-uses separately parsed values. Inputs are constructed outside timing. Parsing
-includes owned-result construction; each iteration's values expire at its end.
-Comparison/matching reuse parsed values. A verified checksum keeps results
-observable, but compiler optimization and hardware still affect measurements.
+The v0.1.1 refresh is being checked against release
+`2311ae69a7edacb545f284b02e345be07dd2fb05`. Earlier timings do not measure its
+copy/formatting/scanner fixes. This index will link the completed refresh;
+older tables below remain historical.
 
-The single-binary harness warms one process and records seven process samples.
-`.build/benchmark.json` retains every raw total, per-operation medians, iteration
-count, source revision/dirty state, compiler revision/version, flags, hardware
-and affinity. Generated builds stay ignored. There is no CI timing threshold.
+## Reproduce
 
-## Before/after measurements
-
-[Latest requirement-token audit](token-audit.md), [numeric/security audit](numeric-audit.md) and [original snapshot](results.md) include every fixture and raw paired samples.
-These are internal before/after measurements on one machine and workload corpus.
-They do not establish cold latency, allocation counts or a universal ranking.
-
-Build the original parser with the **current benchmark source**, then the current
-parser with the same Goose/C compiler and flags. From this checkout after setup:
+With the pinned Goose compiler and the tools described in
+[the comparison method](competitors/README.md):
 
 ```sh
-mkdir -p .build/baseline-source/bench
-git show 15ab97b:semver.goose > .build/baseline-source/semver.goose
-cp bench/bench.goose .build/baseline-source/bench/bench.goose
-.toolchain/goose/build/goose build .build/baseline-source/bench/bench.goose --cc gcc -O2 -o .build/baseline
-.toolchain/goose/build/goose build bench/bench.goose --cc gcc -O2 -o .build/candidate
-python3 scripts/compare-bench.py .build/baseline .build/candidate 30000 --baseline-revision 15ab97b
+make bench-compare COMPARE_ITERATIONS=200000 COMPARE_ROUNDS=9 \
+  COMPARE_FLAGS='--cpu 2'
 ```
 
-Optionally set `BENCH_CPU` before the final command. The comparison harness pins
-the process and its children to that CPU, warms both binaries and runs nine
-counterbalanced pairs with a fixed random seed. It validates identical fixtures,
-counts and checksums. `.build/comparison.json` records every raw pair, paired
-ratios and range, medians, source/binary hashes, revisions, compiler information
-and hardware. Artifact names omit private filesystem paths. Build provenance is
-caller-supplied; binary hashes identify exactly what was measured.
+Choose a CPU allowed by your process affinity. Add `GOOSE=/absolute/path/to/goose`
+if using an installed matching compiler. This runs Goose, lockfile-pinned Rust
+semver 1.0.28 and npm semver 7.8.6 on the same 21 fixtures. Every row is validated
+before timing, and every aggregate checksum is checked afterward.
+`.build/competitors/results.json` contains all nine shuffled rounds, medians,
+min/max, source/binary hashes, compiler versions and machine details. Run from a
+clean checkout and preserve that report. CI's small counts only check execution;
+they are not performance results.
 
-All fixtures, including regressions and wide variation, must remain visible.
-Scheduler load and CPU frequency can affect small differences even with affinity;
-inspect paired ranges rather than treating each median as a precise guarantee.
-Profile before replacing simple bounded copies with a more complex representation.
+For the separate 25-fixture Goose-only harness:
 
-The original 16-fixture snapshot used the benchmark/harness from `deb55af`.
-Use that revision to reproduce its exact fixture set; the current harness validates
-the expanded 25-fixture checksum and compares against the previous numeric implementation.
+```sh
+make bench BENCH_ITERATIONS=10000
+```
+
+It builds with GCC `-O2` by default (`BENCH_CC` overrides it), warms one process
+and records seven process samples in `.build/benchmark.json`. Use `BENCH_CPU` to
+choose an allowed CPU. Inputs are built outside timing; parsed comparison/match
+inputs are reused. Short equality uses separately parsed values. Checksums keep
+results observable, but compiler optimization and scheduling still affect them.
+
+For before/after experiments, build both library revisions with an identical
+benchmark source, Goose compiler and C flags. For example, to reproduce the
+historical numeric comparison, check out `e7e6282f42e3252bb088d83aefe9e01a7181357a`
+and follow [its report](numeric-audit.md). The pair driver is
+`scripts/compare-bench.py`: it warms each binary, checks fixture/count/checksum
+agreement and records nine counterbalanced pairs in `.build/comparison.json`.
+Caller-supplied build descriptions are not proof of source identity; retain the
+source and binary hashes too.
+
+## Historical reports
+
+These are results for the recorded earlier sources, not v0.1.1 or current main.
+Raw reports are preserved unchanged, including noisy and slower results.
+
+| Report | Scope |
+| --- | --- |
+| [Decimal comparison](decimal-audit.md) | 21 competitive fixtures, before the v0.1.1 fixes |
+| [Rust/npm comparison](competitor-results.md) | Earlier 18-fixture competitive corpus |
+| [Requirement scanner](token-audit.md) | 25 paired Goose-only fixtures |
+| [Numeric scanner](numeric-audit.md) | 25 paired Goose-only fixtures |
+| [Original parser](results.md) | Original 16-fixture paired snapshot |
+
+The retained CPU3 competitive run had suspected shared-core contention. No run
+claims exclusive host isolation. Affinity does not remove frequency, allocator,
+GC or scheduling effects. No cold-start latency or allocation counts were measured.

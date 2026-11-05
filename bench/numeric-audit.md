@@ -1,5 +1,9 @@
 # Numeric scanning and security audit
 
+> Historical measurement: this report predates v0.1.1. Its timings and validation
+> apply only to the recorded sources, not current main or v0.1.1.
+> See the [benchmark index](README.md) for current results and reproduction.
+
 Reviewed implementation: `e7e6282f42e3252bb088d83aefe9e01a7181357a`. The baseline is the previous implementation
 `15ab97ba445993b91cc7983325cb3f8f78ba44ae` (same production source as published `e5c5092`).
 Both binaries use the same expanded **25-fixture benchmark source**; the candidate

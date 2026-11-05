@@ -1,5 +1,9 @@
 # One-byte decimal comparison audit
 
+> Historical measurement: this report predates v0.1.1. Its timings and validation
+> apply only to the recorded sources, not current main or v0.1.1.
+> See the [benchmark index](README.md) for current results and reproduction.
+
 The only production change compares equal-length one-byte decimal components directly after length checks; longer components retain the existing arbitrary-magnitude path. There is no representation, allocation, grammar, ownership or resource-limit change.
 
 Reference core: `20204c513ccd991a68d2bb294186da7ff5be3c08`. Candidate core SHA-256: `6da6de08dc5a20bfa5a2e41d03bb9e82f80d305c43b6df3ceafbd7c19164260d`. This run measured a dirty checkout based on `20204c513ccd991a68d2bb294186da7ff5be3c08`; exact source hashes were captured before build and verified unchanged afterward. The published candidate core commit `f0215a2ad2ff9a15adabc9dda494ef63bc06c79c` contains those measured bytes. The driver also verified the supplied Goose executable hash remained unchanged; its configured revision pin is not independently verified by the driver.

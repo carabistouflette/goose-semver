@@ -1,6 +1,10 @@
 # Measured results
 
-A later [numeric/security audit](numeric-audit.md) records the current 25-fixture
+> Historical measurement: this report predates v0.1.1. Its timings and validation
+> apply only to the recorded sources, not current main or v0.1.1.
+> See the [benchmark index](README.md) for current results and reproduction.
+
+A later [numeric/security audit](numeric-audit.md) records a later 25-fixture
 comparison. This original 16-fixture snapshot retains its measured source provenance.
 
 Measured on 2026-11-04: original parser `23ed238a77e6476b3706b280d6807629ddcecfe9` against candidate

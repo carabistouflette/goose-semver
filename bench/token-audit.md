@@ -1,5 +1,9 @@
 # Requirement token scanner audit
 
+> Historical measurement: this report predates v0.1.1. Its timings and validation
+> apply only to the recorded sources, not current main or v0.1.1.
+> See the [benchmark index](README.md) for current results and reproduction.
+
 Measured candidate `33abbfb4de59276e707eec7eabbfa2a6834ce356` against `7f95a8af8c84a439fe250dc8fa86ada638ea3037` with the identical 25-fixture harness, pinned Goose compiler and GCC `-O2`.
 
 Nine counterbalanced pairs, one warm process per binary, 100,000 iterations per fixture, CPU 1 affinity on Intel(R) Core(TM) Ultra 7 258V. This is a shared host, without exclusive isolation. Every checksum passed. The checkout was clean during measurement. Binary/source hashes, all samples and caller-supplied build provenance are in the [raw record](results/2026-11-04-token-scan.json).

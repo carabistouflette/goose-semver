@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Shorten the quickstart and separate testing details from the main guide.
+- Clarify benchmark source versions and retain older results as historical.
+
 ## 0.1.1 — 2026-11-04
 
 - Fix consumer root `copy` overloads replacing owned requirement snapshots:

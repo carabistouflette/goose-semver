@@ -10,7 +10,7 @@ From a normal full-history clone after `make setup`:
 
 ```sh
 make bench-compare COMPARE_ITERATIONS=200000 COMPARE_ROUNDS=9 \
-  COMPARE_FLAGS='--cpu 1 --reference b7dc3aa'
+  COMPARE_FLAGS='--cpu 2'
 ```
 
 The driver explicitly selects rustc's native host target and consumes Cargo's
@@ -19,8 +19,8 @@ or `build.target` cannot silently select a stale native binary. Cross compilatio
 is outside this harness. `make differential` uses the same build helper for its
 separate Rust semantic oracle.
 
-Omit `--reference` for a three-engine run; it adds the older Goose implementation
-using the **same current harness**. Reference names are resolved to full commits.
+For a historical before/after experiment, add `--reference FULL_COMMIT`; it
+adds that older Goose implementation using the **same harness**. Reference names are resolved to full commits.
 On a shallow clone, fetch the reference history before using that option.
 `npm ci --ignore-scripts` and `cargo build --locked` enforce lockfile versions.
 All generated source, dependency caches and binaries remain ignored under
@@ -105,7 +105,8 @@ corpus hash, dependency/source/binary hashes, versions, affinity, every raw roun
 all fixture medians/min/max, barrier controls and separate compatibility probes.
 No private filesystem paths are written to the published raw report.
 
-[Primary results](../competitor-results.md) retain every fixture and regression.
+The [benchmark index](../README.md) separates current results from historical
+reports. Each retains every fixture and regression.
 A CPU3 series with suspected shared-core contention is also retained separately;
 the primary run moved to CPU1 after another fuzzing process was observed on CPU3.
 Neither experiment claims exclusive host isolation. Scheduler load, frequency,

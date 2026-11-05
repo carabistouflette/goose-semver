@@ -1,38 +1,30 @@
 # Security policy
 
-This library is experimental. Security fixes target the latest `main`; no older
-release line has a support commitment yet.
+This library is experimental. Fixes target the latest main; older release lines
+have no support commitment yet.
 
-Report suspected vulnerabilities through [GitHub private vulnerability
-reporting](https://github.com/carabistouflette/goose-semver/security/advisories/new).
+Report suspected vulnerabilities through [GitHub private reporting](https://github.com/carabistouflette/goose-semver/security/advisories/new).
 Include a minimal input, affected commit, Goose revision, platform and observed
-behavior. Keep exploit details private until a fix is available. Do not include
-credentials or sensitive production data.
+behavior. Do not include credentials or production data. Public CI logs and
+failure artifacts can expose inputs; use local reproduction for sensitive reports.
 
-## Contract and limits
+## Input contract
 
-`parse` and `parse_requirement` accept untrusted byte slices. They enforce strict
-ASCII grammar and limits of 4096 bytes per version, 16384 bytes per requirement
-and 32 comparators. Parsing performs bounded linear work without recursion or
-integer conversion. Results own their bytes. No network, file, process,
-cryptographic or user-supplied callback operations occur during parsing/matching.
-Immutable scanner tables and Goose's bounded standard-library scanner accelerate
-long identifiers; no private native kernel or platform-specific code is vendored.
+Parsers accept untrusted byte slices and enforce strict ASCII grammar: at most
+4,096 bytes per version, 16,384 bytes per requirement and 32 comparators.
+They use bounded linear scans without recursion or integer conversion. Results
+own their bytes. Parsing and matching perform no I/O or user callbacks.
 
-Check returned errors. Failed/default requirements and failed/default candidate
-versions match nothing. `compare` and `format` require successfully parsed,
-unmodified versions. Public fields are inspectable; manually fabricated or
-mutated values and namespace-visible implementation helpers are outside the
-supported contract. Limits bound work and logical storage; they do not promise
-an exact allocator budget or recovery from Goose runtime allocation failure.
+Check returned errors. Failed/default requirements and candidate versions match
+nothing. Comparison and formatting require successfully parsed, unmodified
+versions. Fabricated or mutated objects and implementation helpers are outside
+the [supported API](docs/api.md).
 
-Tests combine public behavior, independent Python integer/regex oracles,
-targeted exhaustive byte-edit neighborhoods, seeded mutations, roundtrip and
-failure-state invariants, SIMD block/tail boundary cases and GCC/Clang ASan/UBSan
-runs, the in-process/TinyCC fallback, protected-page read-only slices and
-coverage-guided fuzzing with a self-tested crash-artifact bridge. These improve confidence but do not prove the absence of bugs. The pinned
-Goose compiler and standard-library runtime are part of the trust boundary.
+Limits bound work and logical storage, not an exact allocator budget. Recovery
+from Goose runtime allocation failure is not promised. The pinned Goose compiler
+and standard library are part of the trust boundary. The library vendors no
+native scanner; it uses the standard library's bounded scanner.
 
-Public CI logs and failure artifacts may be publicly accessible. For sensitive
-reports, use private vulnerability reporting and local reproduction; do not
-submit exploit inputs through a public issue, pull request or CI run.
+[Tests](docs/testing.md) include independent models, byte-boundary inputs,
+protected slices, sanitizers and fuzzing. They improve confidence but do not
+prove the absence of bugs.

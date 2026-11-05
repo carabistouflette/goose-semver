@@ -34,8 +34,7 @@ The tests verify strict rejection of prefixed raw text, explicit normalization,
 ordering, build equivalence and full-version constraints using offline snapshots.
 Synthetic malformed names and range boundaries are labeled separately from the
 real tags. `make property` runs these fixtures against optimized and debug
-oracles; `make test` runs the Goose consumer example. Honk's local Git repository
-fixtures and normalization policy remain owned by Honk.
+oracles; `make test` runs the Goose consumer example.
 
 ## Release and dependency pins
 
