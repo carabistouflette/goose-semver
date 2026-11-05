@@ -53,6 +53,22 @@ agreement and records nine counterbalanced pairs in `.build/comparison.json`.
 Caller-supplied build descriptions are not proof of source identity; retain the
 source and binary hashes too.
 
+At that historical candidate checkout, its exact paired build can be reconstructed
+with these commands after compiler setup:
+
+```sh
+mkdir -p .build/baseline-source/bench
+git show 15ab97ba445993b91cc7983325cb3f8f78ba44ae:semver.goose > .build/baseline-source/semver.goose
+cp bench/bench.goose .build/baseline-source/bench/bench.goose
+.toolchain/goose/build/goose build .build/baseline-source/bench/bench.goose --cc gcc -O2 -o .build/baseline
+.toolchain/goose/build/goose build bench/bench.goose --cc gcc -O2 -o .build/candidate
+python3 scripts/compare-bench.py .build/baseline .build/candidate 30000 --baseline-revision 15ab97ba445993b91cc7983325cb3f8f78ba44ae
+```
+
+These historical commands are provided for reproduction, not executed as part
+of the documentation refresh. They do not remeasure the current release.
+
+
 ## Historical reports
 
 These are results for the recorded earlier sources, not v0.1.1 or current main.

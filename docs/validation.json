@@ -1,0 +1,84 @@
+{
+  "release": "v0.1.1",
+  "release_revision": "2311ae69a7edacb545f284b02e345be07dd2fb05",
+  "checked_current_source_bridge_sha256": {
+    "semver.goose": "dde2323c3e132ed7970f97445da5493e9a1417443aa7aed7801c3f8ea2f91018",
+    "GOOSE_REVISION": "64e14b181dfe96743211738fb0f1b1f7798ea940da2ca50ff122e6f028c24e15",
+    "examples/versions.goose": "1fed620ddc6dbb48d00f643e8560c12789ae0354eea89cedb9ccd434c852ffe1",
+    "examples/tag_candidates.goose": "6833fbd7fe74cca7fe3dc01b37fd75dd0cf280ed5ab0607db8fb43f714197a00",
+    "bench/bench.goose": "35c5f78a1faedf5d9db8fdc1d40e1a86acf4016e6f52a31a5cb3f86daf426aff",
+    "bench/competitors/corpus.py": "f54dbfaf29ab862a8bd190dbaa66fd0b5d7b4b2741ba20e1477f58569c0c788a",
+    "bench/competitors/capabilities.py": "55290ec2efdc4d6bba6c3dbfb5bf11f41180f28214309a56f73797450b98a80b",
+    "bench/competitors/goose.goose": "cd978223e636f1689ce59d5c37eced4d9bd79fa88202d5c4886cb32222742f06",
+    "bench/competitors/host.c": "9d164ad60c95574dd221a14a9c751da135d4af00df5b5749e01a542c16165091",
+    "bench/competitors/rust/src/main.rs": "158703b2370ecf0749c244ac8b10abc73fe1c63917a20c1fc56f50ab4f415366",
+    "bench/competitors/rust/Cargo.lock": "69c56192b9e72cf88886a41987ba32bdcbeeec4f38a06e583dcb2cf1237ca653",
+    "bench/competitors/node/package-lock.json": "dbf8c08d0958cb84b6ab0faeba0a5c46bfda0209fc2facbae4822f2473313896",
+    "bench/competitors/node/bench.cjs": "6d9aa87c6f261db3302807914f5e450ea6e5300500f16bfa1a4126603fbeb9cf"
+  },
+  "historical_reports": [
+    {
+      "report": "2026-11-04.json",
+      "sha256": "74dc3a591bf63e434126a4fb351626370dcd5fe1a46eb65abffedd21f9f7aed4",
+      "source_revision": "deb55af08689d53058ce114c2072a4393232b410",
+      "measured_semver_sha256": "2c2b0d2f27a87b3e3b07f7100e83f9ff7b85337ac984aa0b7a8f48a12b35fb70",
+      "matches_v0_1_1_semver": false,
+      "status": "historical_only"
+    },
+    {
+      "report": "2026-11-04-numeric.json",
+      "sha256": "da627a20c4d6f077acdd61f735d5627e5d9348d405f489171fb90a937cd019b9",
+      "source_revision": "e7e6282f42e3252bb088d83aefe9e01a7181357a",
+      "measured_semver_sha256": "94ab6ceabe3349285959343aaeadcc9443d2f13a2db0f932b2607a84108a8b84",
+      "matches_v0_1_1_semver": false,
+      "status": "historical_only"
+    },
+    {
+      "report": "2026-11-04-token-scan.json",
+      "sha256": "81653b5e56a972528ad6d4536ea5d09acdf46acf92452278ba4aab62770ec651",
+      "source_revision": "33abbfb4de59276e707eec7eabbfa2a6834ce356",
+      "measured_semver_sha256": "c3e39a8ef3ee112d2633aaa43863bbcee28c2ab0efbf52d4baa983441ffce60b",
+      "matches_v0_1_1_semver": false,
+      "status": "historical_only"
+    },
+    {
+      "report": "2026-11-04-competitors.json",
+      "sha256": "addd225ebd7f44635f3e1dc2f902b35ffc0f20e90cea09fa6835a29cdc70866f",
+      "source_revision": "efcfc45197a47b52357531550141e34489aa186d",
+      "measured_semver_sha256": "e6b391ff7b393da4002103e59395af3dcc4597ce3b7aec25ce190faf914009b1",
+      "matches_v0_1_1_semver": false,
+      "status": "historical_only"
+    },
+    {
+      "report": "2026-11-04-decimal-competitors.json",
+      "sha256": "09195496f1af1dd89345ad23a547d719c2870f4bbfae387c49eeac89dc989fdf",
+      "source_revision": "20204c513ccd991a68d2bb294186da7ff5be3c08",
+      "measured_semver_sha256": "6da6de08dc5a20bfa5a2e41d03bb9e82f80d305c43b6df3ceafbd7c19164260d",
+      "matches_v0_1_1_semver": false,
+      "status": "historical_only"
+    },
+    {
+      "report": "2026-11-04-competitors-cpu3-contended.json",
+      "sha256": "265b66a16cc52eb1f41391e5e222c940f33c94840b002fd35bc0cf70a30ddaee",
+      "source_revision": "c559b62d36e4a4f1048276b620988c3e1233ee6f",
+      "measured_semver_sha256": "e6b391ff7b393da4002103e59395af3dcc4597ce3b7aec25ce190faf914009b1",
+      "matches_v0_1_1_semver": false,
+      "status": "historical_only"
+    }
+  ],
+  "examples_and_api": "make check test PASS in fresh public release clone and owner checkout using matching cached compiler",
+  "compiler_rebuilt": false,
+  "quickstart_outputs": {
+    "examples/versions.goose": "1.4.2+build.7 matches: true",
+    "examples/tag_candidates.goose": [
+      "v7.8.5 matches: true",
+      "v7.8.6 matches: true",
+      "1.0.28 matches: false",
+      "v2.0.0-beta matches: false"
+    ]
+  },
+  "historical_table_numbers_checked": 654,
+  "setup_shell_syntax": "PASS; bootstrap not rerun",
+  "markdown_local_links": "PASS",
+  "compiler_source_index_hiding_flags": "none"
+}

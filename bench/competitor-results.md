@@ -8,11 +8,9 @@ Measured source: `efcfc45197a47b52357531550141e34489aa186d`; previous Goose core
 `b7dc3aaee7395483e5f56757f3886551634df27d`. Both Goose binaries used the same harness for that run.
 Exact dependencies: Rust `semver` **1.0.28**, npm `semver` **7.8.6** (locked).
 
-On this machine and corpus, Goose has lower process medians in **18/18**
-npm fixtures and **6/18** Rust fixtures. Rust remains faster on the other
-**12**. This is a fixture count, not an overall ranking, significance test
-or claim that all applications become faster. The invalid-input result is close:
-Goose samples span 25.68–30.02 ns and Rust 27.56–31.85 ns, so those ranges overlap.
+The table retains all measured fixtures. Rust is faster on several operations;
+sample ranges overlap on close results. This is a historical public-operation
+comparison, not an overall ranking or a claim of application speedup.
 
 [Raw rounds, ranges, hashes and compatibility probes](results/2026-11-04-competitors.json)
 · [Reproduction and method](competitors/README.md)

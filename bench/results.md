@@ -51,7 +51,7 @@ is algorithmically unchanged, so layout, compiler decisions and scheduling can
 affect the measurement. Small differences should not be treated as guarantees.
 
 The source and binary hashes in the raw record identify the measured artifacts.
-The baseline uses the original core with the current benchmark source; this is
+The baseline uses the original core with the benchmark source from that run; this is
 an internal before/after experiment, not a comparison with another library.
 
 ## Validation on this implementation
