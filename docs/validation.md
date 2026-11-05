@@ -41,12 +41,16 @@ The pinned quickstart prints:
 
 The tag example prints two true and two false results and asserts that malformed
 prefixes remain invalid. The example sources are unchanged from the release.
+The README full-SHA remote import also ran successfully with the same output.
 Relative Markdown links were checked. The preparation-manifest mismatch test
 rejects a changed compiler selection before any benchmark executable runs.
 
 ## Performance scope
 
-The [benchmark index](../bench/README.md) separates current and historical
+The [v0.1.1 comparison](../bench/v0.1.1-results.md) completed all nine rounds
+with every checksum passing, in one 135.322-second invocation. No artifact was
+rebuilt for timing and no retry was run. All current medians and observed ranges
+are retained. The [benchmark index](../bench/README.md) separates current and historical
 measurements. Compiler executable/source identities, lockfiles, corpus, adapter
 binaries and installed Node dependency hashes are retained in the preparation
 record. The reused compiler was not rebuilt or independently attested.

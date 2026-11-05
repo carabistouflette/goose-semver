@@ -80,5 +80,46 @@
   "historical_table_numbers_checked": 654,
   "setup_shell_syntax": "PASS; bootstrap not rerun",
   "markdown_local_links": "PASS",
-  "compiler_source_index_hiding_flags": "none"
+  "compiler_source_index_hiding_flags": "none",
+  "current_benchmark": {
+    "raw_report": "bench/results/2026-11-05-v0.1.1-competitors.json",
+    "raw_sha256": "3de126052126a32de3a455c78a21355796f764467a816e448d0ce2ef243bda15",
+    "source_bridge": "production, compiler pin, adapters, corpus and dependency locks equal release2311",
+    "harness_revision": "f9c52cac10bcb644f28485ef07764dc5a64042f5",
+    "measured_run": {
+      "reservation": "SEMVER-ANN-01",
+      "actual_start_utc": "2026-11-05T21:00:18.465809+00:00",
+      "wall_cap_seconds": 180,
+      "attempt": 1,
+      "harness_revision": "f9c52cac10bcb644f28485ef07764dc5a64042f5",
+      "command": [
+        "taskset",
+        "-c",
+        "2",
+        "python3",
+        "bench/competitors/run.py",
+        "--goose",
+        "<verified-compiler>",
+        "--prepared",
+        "--cpu",
+        "2",
+        "--iterations",
+        "200000",
+        "--rounds",
+        "9"
+      ],
+      "preflight": "all prepared source/compiler/binary/dependency hashes match",
+      "exit": 0,
+      "actual_end_utc": "2026-11-05T21:02:33.787951+00:00",
+      "wall_seconds": 135.32220061402768,
+      "controller_reaped": true,
+      "process_group_absent": true,
+      "raw_sha256": "3de126052126a32de3a455c78a21355796f764467a816e448d0ce2ef243bda15"
+    }
+  },
+  "readme_remote_import": {
+    "revision": "2311ae69a7edacb545f284b02e345be07dd2fb05",
+    "result": "PASS",
+    "stdout": "1.4.2+build.7 matches: true\n"
+  }
 }

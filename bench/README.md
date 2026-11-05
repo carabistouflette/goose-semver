@@ -8,10 +8,12 @@ are retained in each report.
 
 ## Current implementation
 
-The v0.1.1 refresh is being checked against release
-`2311ae69a7edacb545f284b02e345be07dd2fb05`. Earlier timings do not measure its
-copy/formatting/scanner fixes. This index will link the completed refresh;
-older tables below remain historical.
+[v0.1.1 results](v0.1.1-results.md) measure the library at
+`2311ae69a7edacb545f284b02e345be07dd2fb05` on 21 shared-domain fixtures with
+Rust semver 1.0.28 and npm semver 7.8.6. Every median and observed range is shown.
+The checked source bridge covers current main's unchanged library, compiler pin,
+corpus, timed adapters and dependency locks. Older reports below measure sources
+from before v0.1.1's copy/formatting/scanner fixes and remain historical.
 
 ## Reproduce
 
