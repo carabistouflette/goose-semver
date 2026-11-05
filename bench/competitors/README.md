@@ -26,6 +26,28 @@ On a shallow clone, fetch the reference history before using that option.
 All generated source, dependency caches and binaries remain ignored under
 `.build/competitors`, `node_modules` or Cargo's external target directory.
 
+## Separate preparation from timing
+
+For a scheduled measurement window, build once without running any benchmark:
+
+```sh
+make bench-compare COMPARE_FLAGS='--prepare-only --cpu 2'
+```
+
+Then measure those exact prepared artifacts, without rebuilding:
+
+```sh
+make bench-compare COMPARE_ITERATIONS=200000 COMPARE_ROUNDS=9 \
+  COMPARE_FLAGS='--prepared --cpu 2'
+```
+
+Use the same clean checkout, compiler and reference selection for both steps.
+The ignored preparation manifest records source, compiler, native adapter,
+Node executable and installed Node dependency hashes. Reuse fails if they change;
+the completed report also records the prepared artifact hashes. Protect the
+checkout and manifest from concurrent writers. This is reproducibility checking,
+not authentication of an untrusted build.
+
 ## Comparable workloads
 
 `corpus.py` generates 21 fixtures and 3,328 rows. Most fixtures rotate 64 variants;

@@ -13,6 +13,7 @@ import os
 import platform
 import random
 import statistics
+import shutil
 import subprocess
 from pathlib import Path
 import corpus
@@ -48,6 +49,9 @@ def main():
     p.add_argument('--rounds',type=int,default=9)
     p.add_argument('--cpu',type=int)
     p.add_argument('--reference',help='Also build previous Goose core with the same harness')
+    phase=p.add_mutually_exclusive_group()
+    phase.add_argument('--prepare-only',action='store_true',help='Build and hash adapters, without measurements')
+    phase.add_argument('--prepared',action='store_true',help='Measure the unchanged prepared adapters without rebuilding')
     a=p.parse_args()
     if not 1<=a.iterations<=10000000 or not 3<=a.rounds<=51:p.error('iterations1..10000000 and rounds3..51 required')
     files=['semver.goose','GOOSE_REVISION','bench/competitors/corpus.py','bench/competitors/capabilities.py','bench/competitors/goose.goose','bench/competitors/host.c','bench/competitors/run.py','bench/competitors/rust_build.py','bench/competitors/rust/Cargo.toml','bench/competitors/rust/Cargo.lock','bench/competitors/rust/src/main.rs','bench/competitors/node/package.json','bench/competitors/node/package-lock.json','bench/competitors/node/bench.cjs']
@@ -64,16 +68,27 @@ def main():
     # Builds may use the normal CPU set. Timed children inherit one CPU below.
     goose=str(a.goose.resolve())
     goose_sha256=digest(Path(goose))
-    engines={'goose':[str(build_goose(goose,a.cc,ROOT/'bench/competitors/goose.goose','goose'))]}
-    if a.reference:
-        source=WORK/'reference-source';(source/'bench/competitors').mkdir(parents=True,exist_ok=True)
-        (source/'semver.goose').write_text(git('show',reference+':semver.goose')+'\n')
-        (source/'bench/competitors/goose.goose').write_bytes((ROOT/'bench/competitors/goose.goose').read_bytes())
-        engines['goose_reference']=[str(build_goose(goose,a.cc,source/'bench/competitors/goose.goose','reference'))]
-    rust_binary=rust_build.build('goose-semver-rust-comparison',WORK/'rust')
-    run(['npm','ci','--prefix','bench/competitors/node','--ignore-scripts','--no-audit','--no-fund'],stdout=subprocess.DEVNULL)
-    engines['rust']=[str(rust_binary)]
-    engines['node']=['node',str(ROOT/'bench/competitors/node/bench.cjs')]
+    preparation=WORK/'prepared.json'
+    if a.prepared:
+        ready=json.loads(preparation.read_text())
+        if (ready['source_revision']!=source_revision or ready['sources_sha256']!=source_hashes
+            or ready['goose_executable_sha256']!=goose_sha256 or ready['reference_revision']!=reference
+            or ready['cc']!=a.cc):
+            raise RuntimeError('Prepared source/compiler/reference changed; do not measure')
+        for name,sha in ready['artifacts_sha256'].items():
+            if digest(Path(name))!=sha:raise RuntimeError('Prepared artifact changed: '+name)
+        engines=ready['engines']
+    else:
+        engines={'goose':[str(build_goose(goose,a.cc,ROOT/'bench/competitors/goose.goose','goose'))]}
+        if a.reference:
+            source=WORK/'reference-source';(source/'bench/competitors').mkdir(parents=True,exist_ok=True)
+            (source/'semver.goose').write_text(git('show',reference+':semver.goose')+'\n')
+            (source/'bench/competitors/goose.goose').write_bytes((ROOT/'bench/competitors/goose.goose').read_bytes())
+            engines['goose_reference']=[str(build_goose(goose,a.cc,source/'bench/competitors/goose.goose','reference'))]
+        rust_binary=rust_build.build('goose-semver-rust-comparison',WORK/'rust')
+        run(['npm','ci','--prefix','bench/competitors/node','--ignore-scripts','--no-audit','--no-fund'],stdout=subprocess.DEVNULL)
+        engines['rust']=[str(rust_binary)]
+        engines['node']=[str(Path(shutil.which('node')).resolve()),str(ROOT/'bench/competitors/node/bench.cjs')]
     groups={}
     for row in corpus.cases():groups.setdefault(row[1],[]).append(row)
     path=WORK/'corpus.tsv'
@@ -81,6 +96,18 @@ def main():
     expected={}
     for name,rows in groups.items():
         cycles,tail=divmod(a.iterations,len(rows));expected[name]=cycles*sum(r[4] for r in rows)+sum(r[4] for r in rows[:tail])
+    if a.prepare_only:
+        artifacts={str(Path(command[0]).resolve()):digest(Path(command[0]))
+                   for label,command in engines.items() }
+        for item in (ROOT/'bench/competitors/node/node_modules').rglob('*'):
+            if item.is_file():artifacts[str(item)]=digest(item)
+        artifacts[str(Path(shutil.which(a.cc)).resolve())]=digest(Path(shutil.which(a.cc)))
+        ready={'source_revision':source_revision,'sources_sha256':source_hashes,
+               'goose_executable_sha256':goose_sha256,'reference_revision':reference,
+               'cc':a.cc,'engines':engines,'artifacts_sha256':artifacts}
+        preparation.write_text(json.dumps(ready,indent=2)+'\n')
+        print('Adapters prepared; no measurements run: .build/competitors/prepared.json')
+        return
     os.sched_setaffinity(0,{cpu})
     def measure(label):
         result=run(engines[label]+[str(path),str(a.iterations)],capture_output=True,text=True)
@@ -121,6 +148,13 @@ def main():
     compiler_provenance={'requested_goose_revision':(ROOT/'GOOSE_REVISION').read_text().strip(),'goose_executable_sha256':goose_sha256,'revision_verified_by_driver':False}
     report={'source_revision':source_revision,'dirty':source_dirty,'reference_revision':reference,'cleared_environment_keys':cleared,'goose_barrier_control_rows':controls,'cpu':next(line.split(':',1)[1].strip() for line in cpuinfo.splitlines() if line.startswith('model name')),'affinity_cpu':cpu,'platform':platform.platform(),'iterations':a.iterations,'rounds':a.rounds,'post_measurement_assertions':'Source hashes and Git HEAD unchanged since before build','seed':20261104,'goose_revision':(ROOT/'GOOSE_REVISION').read_text().strip(),'cc':run([a.cc,'--version'],capture_output=True,text=True).stdout.splitlines()[0],'rustc':run(['rustc','-Vv'],capture_output=True,text=True).stdout.strip(),'node':run(['node','--version'],capture_output=True,text=True).stdout.strip(),'versions':{'rust_semver':'1.0.28','npm_semver':'7.8.6'},'flags':{'goose':a.cc+' -O2, separate barrier TU, no LTO','rust':'Cargo release opt3, thin LTO, codegen-units1'},'sources_sha256':source_hashes,'corpus_sha256':digest(path),'binary_sha256':{label:digest(Path(command[0])) for label,command in engines.items() if label!='node'},'compatibility_probes_not_ranked':compatibility,'node_warmup':'At least200000 operations per fixture within each measured process using the same operation-specific loop as timing, rounded to whole corpus passes','scope':'Shared strict ASCII subset, safe numeric core/prerelease values and version length<=256. Owned native results; Node immutable input retention/GC. Preparsed comparisons/matches. Default npm cache retained; warm and2048-key miss workloads. Goose opaque-call overhead included, not subtracted. No cold-start, allocation-count or universal-ranking claim.','fixtures':fixtures,'raw_rounds':raw}
     report['compiler_provenance']=compiler_provenance
+    if a.prepared:
+        for name,sha in ready['artifacts_sha256'].items():
+            if digest(Path(name))!=sha:raise RuntimeError('Prepared artifact changed during measurement')
+        report['prepared_artifacts_reused']=True
+        report['prepared_artifact_hashes']={
+            str(Path(name).relative_to(ROOT)) if Path(name).is_relative_to(ROOT) else Path(name).name:sha
+            for name,sha in ready['artifacts_sha256'].items()}
     out=WORK/'results.json';out.write_text(json.dumps(report,indent=2)+'\n')
     for name,vals in fixtures.items():print(name+' '+ ' '.join(f'{label}={v["median_ns"]:.1f}ns' for label,v in vals.items()))
     print('Raw report: .build/competitors/results.json')
