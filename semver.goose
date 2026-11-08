@@ -128,15 +128,15 @@ inline fn parse(text: const u8[:]) -> Version, Error {
 
 fn lexical(a: const u8[:], b: const u8[:]) -> i64 {
     let count = if a.len < b.len { a.len } else { b.len };
-    var start = 0;
-    // Constant-size equality uses the standard bounded word comparison. Skip
-    // equal blocks, then locate the first differing byte in scalar order.
-    if count >= 32 {
-        while start + 16 <= count && a[start..start + 16] == b[start..start + 16] { start += 16; }
-    }
-    for i in start..count {
-        if a[i] < b[i] { return -1; }
-        if a[i] > b[i] { return 1; }
+    // Walk equal 16-byte blocks by narrowing both slices, so the block load is
+    // provably in bounds and the scalar tail is at most 15 bytes. Byte order is
+    // ASCII order, so this is valid for numeric cores and identifiers alike.
+    var left = a[..count];
+    var right = b[..count];
+    while left.len >= 16 && left[..16] == right[..16] { left = left[16..]; right = right[16..]; }
+    for i in left.len {
+        if left[i] < right[i] { return -1; }
+        if left[i] > right[i] { return 1; }
     }
     if a.len < b.len { return -1; }
     if a.len > b.len { return 1; }
