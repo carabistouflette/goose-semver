@@ -3,8 +3,8 @@
 """Paired lexical-comparison driver: two binaries, one instrument, raw on disk.
 
 Every observation is appended and flushed immediately, so an interrupted run
-still leaves the samples it collected. Rounds alternate binary order to cancel
-drift.
+still leaves the samples it collected. Rounds alternate binary order to reduce
+directional drift; this does not establish independence or remove parity effects.
 
 The run is only reported as valid when all of these hold:
   * both binaries produced the same, non-empty set of fixture keys;

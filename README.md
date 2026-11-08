@@ -70,6 +70,8 @@ The latest release is experimental [v0.1.1](https://github.com/carabistouflette/
 at the full commit used above. It fixes caller-overload bugs in v0.1.0 without
 changing the API or limits. Main adds documentation and benchmark updates; its
 library source and compiler pin are unchanged from v0.1.1. Existing tags stay fixed.
+This work branch changes lexical comparison. The archived release measurements
+do not qualify its performance; see the [lexical measurement method](bench/lexical-method.md).
 See the [changelog](CHANGELOG.md).
 
 Validated on Linux x86-64 with the pinned Goose compiler, GCC and Clang. Other

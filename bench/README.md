@@ -6,7 +6,7 @@ Comparison and matching reuse parsed values. Parsing includes result creation
 and disposal. Full methods, source identities, raw samples and slower results
 are retained in each report.
 
-## Current implementation
+## Released baseline
 
 [v0.1.1 results](v0.1.1-results.md) measure the library at
 `2311ae69a7edacb545f284b02e345be07dd2fb05` on 21 shared-domain fixtures with
@@ -14,6 +14,11 @@ Rust semver 1.0.28 and npm semver 7.8.6. Every median and observed range is show
 The checked source bridge covers current main's unchanged library, compiler pin,
 corpus, timed adapters and dependency locks. Older reports below measure sources
 from before v0.1.1's copy/formatting/scanner fixes and remain historical.
+
+This branch changes lexical comparison. The historical source bridge does not
+extend those measurements to the changed comparison path. The focused
+[lexical method](lexical-method.md) describes its paired driver, interpretation
+limits and required disclosure of slower fixtures.
 
 ## Reproduce
 
